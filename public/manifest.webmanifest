@@ -1,0 +1,9 @@
+{
+  "name": "solvestuff",
+  "short_name": "solvestuff",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f6f7fb",
+  "theme_color": "#3b3fd8",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

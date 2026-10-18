@@ -1,0 +1,97 @@
+{
+  "version": 1,
+  "levels": [
+    {
+      "id": "basico",
+      "name": { "pt": "Básico", "en": "Basic" },
+      "description": { "pt": "1.º ao 9.º ano", "en": "Grades 1–9 (Portuguese system)" },
+      "wip": false,
+      "buildsOn": null,
+      "topics": [
+        {
+          "id": "calculo-numerico",
+          "name": { "pt": "Cálculo Numérico", "en": "Numerical Calculation" },
+          "description": { "pt": "Operações, prioridades, potências e raízes.", "en": "Operations, order of operations, powers and roots." },
+          "wip": false
+        },
+        {
+          "id": "fracoes",
+          "name": { "pt": "Frações", "en": "Fractions" },
+          "description": { "pt": "Simplificar, comparar e operar com frações.", "en": "Simplifying, comparing and operating with fractions." },
+          "wip": false
+        },
+        {
+          "id": "percentagens",
+          "name": { "pt": "Percentagens", "en": "Percentages" },
+          "description": { "pt": "Percentagens, descontos, aumentos e proporções.", "en": "Percentages, discounts, increases and proportions." },
+          "wip": false
+        },
+        {
+          "id": "algebra-essencial",
+          "name": { "pt": "Álgebra Essencial", "en": "Essential Algebra" },
+          "description": { "pt": "Expressões, equações e sistemas.", "en": "Expressions, equations and systems." },
+          "wip": false
+        },
+        {
+          "id": "geometria",
+          "name": { "pt": "Geometria", "en": "Geometry" },
+          "description": { "pt": "Figuras, áreas, volumes e Pitágoras.", "en": "Shapes, areas, volumes and Pythagoras." },
+          "wip": false
+        },
+        {
+          "id": "estatistica",
+          "name": { "pt": "Estatística", "en": "Statistics" },
+          "description": { "pt": "Tabelas, gráficos, média, moda e mediana.", "en": "Tables, charts, mean, mode and median." },
+          "wip": false
+        }
+      ]
+    },
+    {
+      "id": "secundario",
+      "name": { "pt": "Secundário", "en": "High School" },
+      "description": { "pt": "10.º ao 12.º ano", "en": "Grades 10–12 (Portuguese system)" },
+      "wip": true,
+      "buildsOn": "basico",
+      "topics": [
+        {
+          "id": "inequacoes",
+          "name": { "pt": "Inequações", "en": "Inequalities" },
+          "description": { "pt": "", "en": "" },
+          "wip": false
+        },
+        {
+          "id": "sucessoes-progressoes",
+          "name": { "pt": "Sucessões e Progressões", "en": "Sequences and Progressions" },
+          "description": { "pt": "", "en": "" },
+          "wip": false
+        },
+        {
+          "id": "trigonometria",
+          "name": { "pt": "Trigonometria", "en": "Trigonometry" },
+          "description": { "pt": "", "en": "" },
+          "wip": false
+        },
+        {
+          "id": "numeros-complexos",
+          "name": { "pt": "Números Complexos", "en": "Complex Numbers" },
+          "description": { "pt": "", "en": "" },
+          "wip": false
+        },
+        {
+          "id": "limites",
+          "name": { "pt": "Limites", "en": "Limits" },
+          "description": { "pt": "", "en": "" },
+          "wip": false
+        }
+      ]
+    },
+    {
+      "id": "universidade",
+      "name": { "pt": "Universidade", "en": "University" },
+      "description": { "pt": "Ensino superior", "en": "University level" },
+      "wip": true,
+      "buildsOn": "secundario",
+      "topics": []
+    }
+  ]
+}
