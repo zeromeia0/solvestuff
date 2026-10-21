@@ -19,10 +19,12 @@ Abre http://localhost:8087. A área do professor está em `#/admin` (link no rod
 server.js                 servidor HTTP: API em /api/*, ficheiros estáticos de public/
 src/api.js                rotas da API (fichas, upload de PDFs, temas, login admin)
 src/store.js              "base de dados" em ficheiros JSON (escritas atómicas)
+src/sequence.js           lê Matematica_Sequencia_de_Ensino.md (checklist dos alunos)
 data/curriculum.seed.json percursos e temas iniciais
 storage/                  criado no arranque (não vai para o git)
   curriculum.json         percursos/temas atuais (editáveis na área do professor)
   sheets.json             metadados das fichas
+  students.json           alunos do professor e o checklist de cada um
   uploads/<id>.pdf        os PDFs
 public/                   a app (SPA em JS puro, rotas com #)
   js/config.js            URL base da API (para a futura app Android)
@@ -35,6 +37,12 @@ na área do professor (ou apaga `storage/curriculum.json` para voltar a usar o s
 
 Para fazer backup basta copiar a pasta `storage/`.
 
+## Alunos (área do professor → Alunos)
+
+O checklist de cada aluno é a lista de `Matematica_Sequencia_de_Ensino.md`, lida quando o servidor arranca
+(reinicia-o depois de editar o ficheiro). O progresso fica guardado pelo **número** de cada tópico, por isso
+acrescenta tópicos novos no fim em vez de renumerar a lista.
+
 ## API
 
 | Método | Caminho | |
@@ -43,11 +51,15 @@ Para fazer backup basta copiar a pasta `storage/`.
 | GET | `/api/sheets?level=&topic=` | lista de fichas |
 | GET | `/api/sheets/:id/file[?download=1]` | o PDF |
 | POST | `/api/admin/login` | `{password}` → `{token}` |
-| POST | `/api/admin/sheets` | multipart: `file`, `titlePt`, `titleEn`, `descriptionPt`, `descriptionEn`, `level`, `topic`, `difficulty` (1–3) |
+| POST | `/api/admin/sheets` | multipart: `file`, `titlePt`, `titleEn`, `descriptionPt`, `descriptionEn`, `level`, `topic` |
 | PATCH / DELETE | `/api/admin/sheets/:id` | editar / apagar ficha |
 | PATCH | `/api/admin/levels/:level` | `{wip}` |
 | POST | `/api/admin/levels/:level/topics` | novo tema |
 | PATCH / DELETE | `/api/admin/levels/:level/topics/:topic` | editar, mover (`{move: -1|1}`), apagar |
+| GET | `/api/admin/sequence` | sequência de ensino (lida do `.md`) |
+| GET / POST | `/api/admin/students` | listar / criar aluno (`{name, grade, programme, notes}`) |
+| GET / PATCH / DELETE | `/api/admin/students/:id` | ver / editar / apagar aluno |
+| PATCH | `/api/admin/students/:id/progress` | `{topics: {"12": "known" \| "learning" \| "review" \| null}}` |
 
 As rotas `/api/admin/*` precisam de `Authorization: Bearer <token>`.
 

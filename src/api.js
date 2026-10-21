@@ -4,11 +4,13 @@ import { createReadStream } from 'node:fs';
 import path from 'node:path';
 import { Readable } from 'node:stream';
 import { createJsonStore } from './store.js';
+import { loadSequence } from './sequence.js';
 import { HttpError, sendJson, readJson } from './http.js';
 
 const MAX_PDF_BYTES = 50 * 1024 * 1024;
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000;
-const DIFFICULTIES = [1, 2, 3];
+const PROGRAMMES = ['', 'AE2018', 'AE2023'];
+const TOPIC_STATUSES = ['learning', 'known', 'review'];
 
 function slugify(value) {
   return String(value)
@@ -70,12 +72,15 @@ async function readForm(req, maxBytes) {
   }
 }
 
-export async function createApi({ storageDir, seedFile, adminPassword }) {
+export async function createApi({ storageDir, seedFile, sequenceFile, adminPassword }) {
   const uploadsDir = path.join(storageDir, 'uploads');
   await fs.mkdir(uploadsDir, { recursive: true });
   const seed = JSON.parse(await fs.readFile(seedFile, 'utf8'));
   const curriculum = createJsonStore(path.join(storageDir, 'curriculum.json'), seed);
   const sheets = createJsonStore(path.join(storageDir, 'sheets.json'), { sheets: [] });
+  const students = createJsonStore(path.join(storageDir, 'students.json'), { students: [] });
+  const sequence = await loadSequence(sequenceFile);
+  const sequenceIds = new Set(sequence.parts.flatMap((p) => p.blocks.flatMap((b) => b.items.map((i) => i.id))));
   const sessions = new Map(); // token -> expiresAt
   const passwordHash = crypto.createHash('sha256').update(adminPassword).digest();
 
@@ -100,7 +105,6 @@ export async function createApi({ storageDir, seedFile, adminPassword }) {
       .sort(
         (a, b) =>
           (rank.get(`${a.level}/${a.topic}`) ?? 1e9) - (rank.get(`${b.level}/${b.topic}`) ?? 1e9) ||
-          a.difficulty - b.difficulty ||
           a.createdAt.localeCompare(b.createdAt),
       );
   }
@@ -116,8 +120,6 @@ export async function createApi({ storageDir, seedFile, adminPassword }) {
     const level = fields.level ?? current.level;
     const topic = fields.topic ?? current.topic;
     findTopic(findLevel(await curriculum.get(), level), topic);
-    const difficulty = Number(fields.difficulty ?? current.difficulty ?? 1);
-    if (!DIFFICULTIES.includes(difficulty)) throw new HttpError(400, 'invalid_difficulty');
     const title = bilingual(fields.titlePt ?? current.title?.pt, fields.titleEn ?? current.title?.en, 160);
     if (!title.pt && !title.en) throw new HttpError(400, 'title_required');
     const description = bilingual(
@@ -125,7 +127,26 @@ export async function createApi({ storageDir, seedFile, adminPassword }) {
       fields.descriptionEn ?? current.description?.en,
       600,
     );
-    return { level, topic, difficulty, title, description };
+    return { level, topic, title, description };
+  }
+
+  function findStudent(data, id) {
+    const student = data.students.find((s) => s.id === id);
+    if (!student) throw new HttpError(404, 'student_not_found');
+    return student;
+  }
+
+  function studentFields(body, current = {}) {
+    const name = text(body.name ?? current.name, 80);
+    if (!name) throw new HttpError(400, 'name_required');
+    const programme = body.programme ?? current.programme ?? '';
+    if (!PROGRAMMES.includes(programme)) throw new HttpError(400, 'invalid_programme');
+    return {
+      name,
+      grade: text(body.grade ?? current.grade, 40),
+      programme,
+      notes: text(body.notes ?? current.notes, 4000),
+    };
   }
 
   const routes = [
@@ -286,6 +307,70 @@ export async function createApi({ storageDir, seedFile, adminPassword }) {
         const level = findLevel(data, params.level);
         findTopic(level, params.topic);
         level.topics = level.topics.filter((t) => t.id !== params.topic);
+        return { ok: true };
+      });
+    }],
+
+    // --- students (teacher's checklist of the teaching sequence) ---
+    ['GET', '/api/admin/sequence', ({ req }) => {
+      requireAdmin(req);
+      return sequence;
+    }],
+
+    ['GET', '/api/admin/students', async ({ req }) => {
+      requireAdmin(req);
+      const { students: all } = await students.get();
+      return { students: [...all].sort((a, b) => a.name.localeCompare(b.name)) };
+    }],
+
+    ['POST', '/api/admin/students', async ({ req }) => {
+      requireAdmin(req);
+      const fields = studentFields(await readJson(req));
+      const now = new Date().toISOString();
+      const student = { id: crypto.randomUUID(), ...fields, progress: {}, createdAt: now, updatedAt: now };
+      return students.update((data) => (data.students.push(student), student));
+    }],
+
+    ['GET', '/api/admin/students/:id', async ({ req, params }) => {
+      requireAdmin(req);
+      return findStudent(await students.get(), params.id);
+    }],
+
+    ['PATCH', '/api/admin/students/:id', async ({ req, params }) => {
+      requireAdmin(req);
+      const body = await readJson(req);
+      return students.update((data) => {
+        const student = findStudent(data, params.id);
+        return Object.assign(student, studentFields(body, student), { updatedAt: new Date().toISOString() });
+      });
+    }],
+
+    // {topics: {"12": "known", "13": null}} sets or clears the status of several topics at once.
+    ['PATCH', '/api/admin/students/:id/progress', async ({ req, params }) => {
+      requireAdmin(req);
+      const { topics } = await readJson(req);
+      if (!topics || typeof topics !== 'object') throw new HttpError(400, 'invalid_progress');
+      const changes = Object.entries(topics);
+      if (changes.some(([id, status]) => !sequenceIds.has(id) || (status !== null && !TOPIC_STATUSES.includes(status)))) {
+        throw new HttpError(400, 'invalid_progress');
+      }
+      return students.update((data) => {
+        const student = findStudent(data, params.id);
+        const now = new Date().toISOString();
+        for (const [id, status] of changes) {
+          if (status === null) delete student.progress[id];
+          else if (student.progress[id]?.status !== status) student.progress[id] = { status, at: now };
+        }
+        student.updatedAt = now;
+        return student;
+      });
+    }],
+
+    ['DELETE', '/api/admin/students/:id', async ({ req, params }) => {
+      requireAdmin(req);
+      return students.update((data) => {
+        findStudent(data, params.id);
+        data.students = data.students.filter((s) => s.id !== params.id);
         return { ok: true };
       });
     }],

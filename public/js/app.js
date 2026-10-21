@@ -3,6 +3,7 @@ import * as api from './api.js';
 import * as user from './user.js';
 import { esc, levelById, wipBadge, progressBar, sheetList, levelPicker, options, topicName } from './ui.js';
 import { renderAdmin } from './admin.js';
+import { renderStudents, renderStudent } from './students.js';
 
 const view = document.getElementById('view');
 const nav = document.getElementById('nav');
@@ -52,7 +53,8 @@ async function renderHome() {
   const total = sheets.length;
   const doneCount = sheets.filter((s) => user.isDone(s.id)).length;
   const next = stats.find((s) => s.done < s.total);
-  const latest = [...sheets].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 5);
+  // sheets come back in pathway order, so the first pending ones are what to do next
+  const upNext = sheets.filter((s) => !user.isDone(s.id)).slice(0, 5);
 
   let continueBlock;
   if (!total) continueBlock = `<p class="muted">${esc(t('home.continueEmpty'))}</p>`;
@@ -81,7 +83,7 @@ async function renderHome() {
         ${continueBlock}
       </section>
     </div>
-    ${latest.length ? `<section class="card"><h2>${esc(t('home.latest'))}</h2>${sheetList(latest, curriculum)}</section>` : ''}`;
+    ${upNext.length ? `<section class="card"><h2>${esc(t('home.upNext'))}</h2>${sheetList(upNext, curriculum)}</section>` : ''}`;
 }
 
 async function renderPathway(_, query) {
@@ -147,7 +149,6 @@ async function renderSheets(_, query) {
   const state = {
     level: query.has('level') ? query.get('level') : u.level,
     topic: query.get('topic') || '',
-    difficulty: query.get('difficulty') || '',
     q: query.get('q') || '',
     hideDone: query.get('hideDone') === '1',
   };
@@ -158,10 +159,6 @@ async function renderSheets(_, query) {
       <input type="search" name="q" placeholder="${esc(t('sheets.search'))}" value="${esc(state.q)}">
       <select name="level"></select>
       <select name="topic"></select>
-      <select name="difficulty">${options(
-        [['', t('sheets.allDifficulties')], ...[1, 2, 3].map((d) => [String(d), t(`difficulty.${d}`)])],
-        state.difficulty,
-      )}</select>
       <label class="toggle"><input type="checkbox" name="hideDone"${state.hideDone ? ' checked' : ''}> ${esc(t('sheets.hideDone'))}</label>
     </form>
     <p class="muted count" id="count"></p>
@@ -184,7 +181,6 @@ async function renderSheets(_, query) {
       (s) =>
         (!state.level || s.level === state.level) &&
         (!state.topic || s.topic === state.topic) &&
-        (!state.difficulty || String(s.difficulty) === state.difficulty) &&
         (!state.hideDone || !user.isDone(s.id)) &&
         (!q ||
           [s.title.pt, s.title.en, s.description.pt, s.description.en, topicName(curriculum, s.level, s.topic)]
@@ -202,7 +198,6 @@ async function renderSheets(_, query) {
     if (e.target.name === 'level') state.topic = '';
     state.level = form.level.value;
     state.topic = e.target.name === 'level' ? '' : form.topic.value;
-    state.difficulty = form.difficulty.value;
     state.q = form.q.value;
     state.hideDone = form.hideDone.checked;
     if (e.target.name === 'level') fillSelects();
@@ -290,6 +285,8 @@ const routes = [
   [/^\/sheets$/, renderSheets, { nav: 'sheets' }],
   [/^\/profile$/, renderProfile, { nav: 'profile' }],
   [/^\/admin$/, renderAdmin, { public: true }],
+  [/^\/admin\/students$/, renderStudents, { public: true }],
+  [/^\/admin\/students\/([\w-]+)$/, renderStudent, { public: true }],
 ];
 
 function renderChrome(active) {

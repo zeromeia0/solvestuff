@@ -1,11 +1,8 @@
 import { t, L, errorMessage } from './i18n.js';
 import * as api from './api.js';
-import { esc, levelById, wipBadge, difficultyBadge, options, topicName } from './ui.js';
+import { esc, levelById, wipBadge, options, topicName } from './ui.js';
 
 const view = document.getElementById('view');
-
-const difficultyOptions = (selected) =>
-  options([1, 2, 3].map((d) => [String(d), t(`difficulty.${d}`)]), String(selected));
 
 const topicOptions = (curriculum, levelId, selected) =>
   options((levelById(curriculum, levelId)?.topics ?? []).map((tp) => [tp.id, L(tp.name)]), selected);
@@ -13,24 +10,50 @@ const topicOptions = (curriculum, levelId, selected) =>
 const levelOptions = (curriculum, selected) =>
   options(curriculum.levels.map((l) => [l.id, L(l.name)]), selected);
 
+// Kept across re-renders so saving or deleting a sheet doesn't reset the filter.
+const sheetFilter = { q: '', level: '', topic: '' };
+
+const normalize = (value) =>
+  String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
 function setStatus(el, message, kind = '') {
   el.textContent = message;
   el.className = `status ${kind}`;
 }
 
+// Shows the login form (which calls onLogin on success) unless there's a valid session.
+export async function ensureAdmin(onLogin) {
+  if (api.getAdminToken() && (await api.admin.me().then(() => true, () => false))) return true;
+  api.setAdminToken(null);
+  renderAdminLogin(onLogin);
+  return false;
+}
+
+export async function logout(onDone) {
+  await api.admin.logout().catch(() => {});
+  api.setAdminToken(null);
+  return onDone();
+}
+
+export function adminHead(active) {
+  const tab = (id, href) =>
+    `<a class="tab${active === id ? ' active' : ''}" href="${href}">${esc(t(`admin.tab.${id}`))}</a>`;
+  return `<section class="page-head">
+      <div class="row between">
+        <h1>${esc(t('admin.title'))}</h1>
+        <button class="btn ghost" data-action="logout">${esc(t('admin.logout'))}</button>
+      </div>
+      <nav class="tabs">${tab('content', '#/admin')}${tab('students', '#/admin/students')}</nav>
+    </section>`;
+}
+
 export async function renderAdmin() {
-  if (!api.getAdminToken() || !(await api.admin.me().then(() => true, () => false))) {
-    api.setAdminToken(null);
-    return renderAdminLogin();
-  }
+  if (!(await ensureAdmin(renderAdmin))) return;
   const [curriculum, sheets] = await Promise.all([api.getCurriculum({ fresh: true }), api.listSheets()]);
   const firstLevel = curriculum.levels.find((l) => l.topics.length) ?? curriculum.levels[0];
 
   view.innerHTML = `<div id="admin-root">
-    <section class="page-head row between">
-      <h1>${esc(t('admin.title'))}</h1>
-      <button class="btn ghost" data-action="logout">${esc(t('admin.logout'))}</button>
-    </section>
+    ${adminHead('content')}
 
     <section class="card">
       <h2>${esc(t('admin.upload'))}</h2>
@@ -45,18 +68,23 @@ export async function renderAdmin() {
           <select name="level" data-level-select>${levelOptions(curriculum, firstLevel.id)}</select></label>
         <label class="field"><span>${esc(t('admin.topic'))}</span>
           <select name="topic" required>${topicOptions(curriculum, firstLevel.id)}</select></label>
-        <label class="field"><span>${esc(t('admin.difficulty'))}</span>
-          <select name="difficulty">${difficultyOptions(1)}</select></label>
-        <div class="field end"><button class="btn primary" type="submit">${esc(t('admin.uploadBtn'))}</button></div>
+        <div class="field end span-2"><button class="btn primary" type="submit">${esc(t('admin.uploadBtn'))}</button></div>
         <p class="status span-2" id="upload-status" role="status"></p>
       </form>
     </section>
 
     <section class="card">
-      <h2>${esc(t('admin.sheets'))} <small class="muted">(${sheets.length})</small></h2>
+      <h2>${esc(t('admin.sheets'))} <small class="muted" id="sheet-count">(${sheets.length})</small></h2>
       ${
         sheets.length
-          ? `<ul class="admin-list">${sheets.map((s) => sheetRow(curriculum, s)).join('')}</ul>`
+          ? `<form class="filters admin-filters" id="sheet-filters">
+              <input type="search" name="q" placeholder="${esc(t('admin.searchSheets'))}" value="${esc(sheetFilter.q)}">
+              <select name="level"></select>
+              <select name="topic"></select>
+              <button class="btn small ghost" type="reset">${esc(t('admin.clearFilters'))}</button>
+            </form>
+            <ul class="admin-list">${sheets.map((s) => sheetRow(curriculum, s)).join('')}</ul>
+            <p class="muted" id="sheet-none" hidden>${esc(t('sheets.none'))}</p>`
           : `<p class="muted">${esc(t('admin.noSheets'))}</p>`
       }
     </section>
@@ -68,15 +96,86 @@ export async function renderAdmin() {
 
   // Bind to a fresh root each render so listeners never pile up.
   bind(view.querySelector('#admin-root'), curriculum);
+  bindSheetFilters(view.querySelector('#sheet-filters'), curriculum, sheets.length);
+}
+
+function bindSheetFilters(form, curriculum, total) {
+  if (!form) return;
+  // Topic ids are only unique within a level, so the topic filter holds "level/topic".
+  const topicKey = (levelId, topicId) => `${levelId}/${topicId}`;
+  const topicLevel = (key) => key.slice(0, key.indexOf('/'));
+  const topicExists = (key) =>
+    curriculum.levels.some((l) => l.topics.some((tp) => topicKey(l.id, tp.id) === key));
+
+  // A level or topic may have been deleted since the filter was set.
+  if (!levelById(curriculum, sheetFilter.level)) sheetFilter.level = '';
+  if (!topicExists(sheetFilter.topic)) sheetFilter.topic = '';
+
+  const fillSelects = () => {
+    form.level.innerHTML = options(
+      [['', t('sheets.allLevels')], ...curriculum.levels.map((l) => [l.id, L(l.name)])],
+      sheetFilter.level,
+    );
+    const levels = sheetFilter.level ? [levelById(curriculum, sheetFilter.level)] : curriculum.levels;
+    const topicOptionsOf = (level) =>
+      options(level.topics.map((tp) => [topicKey(level.id, tp.id), L(tp.name)]), sheetFilter.topic);
+    // With every level shown, group the topics by level so equal names stay distinguishable.
+    form.topic.innerHTML =
+      options([['', t('sheets.allTopics')]], sheetFilter.topic) +
+      (sheetFilter.level
+        ? topicOptionsOf(levels[0])
+        : levels
+            .filter((l) => l.topics.length)
+            .map((l) => `<optgroup label="${esc(L(l.name))}">${topicOptionsOf(l)}</optgroup>`)
+            .join(''));
+  };
+
+  const apply = () => {
+    const q = normalize(sheetFilter.q.trim());
+    let shown = 0;
+    form.parentElement.querySelectorAll('[data-sheet]').forEach((item) => {
+      const match =
+        (!sheetFilter.level || item.dataset.level === sheetFilter.level) &&
+        (!sheetFilter.topic || topicKey(item.dataset.level, item.dataset.topic) === sheetFilter.topic) &&
+        (!q || normalize(item.dataset.search).includes(q));
+      item.hidden = !match;
+      if (match) shown++;
+    });
+    form.parentElement.querySelector('#sheet-count').textContent = shown === total ? `(${total})` : `(${shown}/${total})`;
+    form.parentElement.querySelector('#sheet-none').hidden = shown > 0;
+  };
+
+  form.addEventListener('input', (e) => {
+    sheetFilter.q = form.q.value;
+    sheetFilter.level = form.level.value;
+    sheetFilter.topic = form.topic.value;
+    if (e.target.name === 'level') {
+      // Keep the chosen topic only if it belongs to the newly chosen level.
+      if (sheetFilter.level && topicLevel(sheetFilter.topic) !== sheetFilter.level) sheetFilter.topic = '';
+      fillSelects();
+    }
+    apply();
+  });
+  form.addEventListener('reset', (e) => {
+    e.preventDefault();
+    Object.assign(sheetFilter, { q: '', level: '', topic: '' });
+    form.q.value = '';
+    fillSelects();
+    apply();
+  });
+  form.addEventListener('submit', (e) => e.preventDefault());
+
+  fillSelects();
+  apply();
 }
 
 function sheetRow(curriculum, s) {
-  return `<li class="admin-item" data-sheet="${esc(s.id)}">
+  const search = [s.title.pt, s.title.en, s.originalName].join(' ');
+  return `<li class="admin-item" data-sheet="${esc(s.id)}" data-level="${esc(s.level)}" data-topic="${esc(s.topic)}" data-search="${esc(search)}">
     <div class="admin-item-main">
       <a href="${api.fileUrl(s.id)}" target="_blank" rel="noopener"><strong>${esc(L(s.title))}</strong></a>
       <div class="sheet-meta">
         <span>${esc(L(levelById(curriculum, s.level)?.name) || s.level)} › ${esc(topicName(curriculum, s.level, s.topic))}</span>
-        ${difficultyBadge(s.difficulty)}
         <span class="muted">${(s.size / 1024 / 1024).toFixed(1)} MB · ${new Date(s.createdAt).toLocaleDateString()}</span>
       </div>
     </div>
@@ -91,8 +190,7 @@ function sheetRow(curriculum, s) {
       <label class="field"><span>${esc(t('admin.descEn'))}</span><textarea name="descriptionEn" rows="2" maxlength="600">${esc(s.description.en)}</textarea></label>
       <label class="field"><span>${esc(t('admin.level'))}</span><select name="level" data-level-select>${levelOptions(curriculum, s.level)}</select></label>
       <label class="field"><span>${esc(t('admin.topic'))}</span><select name="topic">${topicOptions(curriculum, s.level, s.topic)}</select></label>
-      <label class="field"><span>${esc(t('admin.difficulty'))}</span><select name="difficulty">${difficultyOptions(s.difficulty)}</select></label>
-      <div class="field end row">
+      <div class="field end row span-2">
         <button class="btn primary small" type="submit">${esc(t('admin.save'))}</button>
         <button class="btn ghost small" type="button" data-action="cancel-edit">${esc(t('admin.cancel'))}</button>
       </div>
@@ -184,9 +282,7 @@ function bind(root, curriculum) {
 
     switch (btn.dataset.action) {
       case 'logout':
-        await api.admin.logout().catch(() => {});
-        api.setAdminToken(null);
-        return renderAdmin();
+        return logout(renderAdmin);
       case 'edit-sheet':
         item.querySelector('.edit-form').hidden = false;
         return;
@@ -218,7 +314,7 @@ function bind(root, curriculum) {
 
   root.addEventListener('submit', (e) => {
     const form = e.target;
-    if (form.id === 'upload-form') return;
+    if (form.id === 'upload-form' || form.id === 'sheet-filters') return;
     e.preventDefault();
     const data = Object.fromEntries(new FormData(form));
     const item = form.closest('[data-sheet]');
@@ -239,7 +335,7 @@ function bind(root, curriculum) {
   });
 }
 
-function renderAdminLogin() {
+function renderAdminLogin(onLogin) {
   view.innerHTML = `
     <section class="card narrow">
       <h1>${esc(t('admin.title'))}</h1>
@@ -256,7 +352,7 @@ function renderAdminLogin() {
     try {
       const { token } = await api.admin.login(form.password.value);
       api.setAdminToken(token);
-      renderAdmin();
+      onLogin();
     } catch {
       setStatus(form.querySelector('.status'), t('admin.wrongPassword'), 'error');
     }

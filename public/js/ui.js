@@ -15,10 +15,6 @@ export function topicName(curriculum, levelId, topicId) {
 
 export const wipBadge = () => `<span class="badge wip">${esc(t('wip'))}</span>`;
 
-export function difficultyBadge(d) {
-  return `<span class="badge diff diff-${d}" title="${esc(t(`difficulty.${d}`))}">${'●'.repeat(d)}${'○'.repeat(3 - d)} ${esc(t(`difficulty.${d}`))}</span>`;
-}
-
 export function progressBar(doneCount, total) {
   const pct = total ? Math.round((doneCount / total) * 100) : 0;
   return `<div class="progress" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><span style="width:${pct}%"></span></div>`;
@@ -38,7 +34,6 @@ export function sheetList(sheets, curriculum, { showTopic = true } = {}) {
           <a class="sheet-title" href="${fileUrl(s.id)}" target="_blank" rel="noopener">${esc(L(s.title))}</a>
           <div class="sheet-meta">
             ${showTopic ? `<span>${esc(topicName(curriculum, s.level, s.topic))}</span>` : ''}
-            ${difficultyBadge(s.difficulty)}
           </div>
           ${desc ? `<p class="sheet-desc">${esc(desc)}</p>` : ''}
         </div>

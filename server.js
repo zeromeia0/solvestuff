@@ -23,6 +23,7 @@ if (!adminPassword) {
 const handleApi = await createApi({
   storageDir,
   seedFile: path.join(root, 'data', 'curriculum.seed.json'),
+  sequenceFile: path.join(root, 'Matematica_Sequencia_de_Ensino.md'),
   adminPassword,
 });
 

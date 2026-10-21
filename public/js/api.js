@@ -66,4 +66,11 @@ export const admin = {
     request('PATCH', `/api/admin/levels/${level}/topics/${topic}`, fields, { admin: true }),
   deleteTopic: (level, topic) =>
     request('DELETE', `/api/admin/levels/${level}/topics/${topic}`, null, { admin: true }),
+  sequence: () => request('GET', '/api/admin/sequence', null, { admin: true }),
+  listStudents: () => request('GET', '/api/admin/students', null, { admin: true }).then((d) => d.students),
+  getStudent: (id) => request('GET', `/api/admin/students/${id}`, null, { admin: true }),
+  addStudent: (fields) => request('POST', '/api/admin/students', fields, { admin: true }),
+  updateStudent: (id, fields) => request('PATCH', `/api/admin/students/${id}`, fields, { admin: true }),
+  setProgress: (id, topics) => request('PATCH', `/api/admin/students/${id}/progress`, { topics }, { admin: true }),
+  deleteStudent: (id) => request('DELETE', `/api/admin/students/${id}`, null, { admin: true }),
 };

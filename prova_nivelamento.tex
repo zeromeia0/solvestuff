@@ -1,0 +1,1303 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[portuguese]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{tasks}
+\usepackage{multicol}
+\usepackage{tikz}
+\usepackage{pgfplots}
+
+\usetikzlibrary{babel,calc,arrows.meta}
+\pgfplotsset{compat=1.18}
+
+\geometry{margin=2cm}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+
+% Questões numeradas de forma contínua em toda a prova
+\newlist{questoes}{enumerate}{1}
+\setlist[questoes]{
+    label=\arabic*.,
+    ref=\arabic*,
+    itemsep=0.45cm,
+    topsep=0.2cm,
+    leftmargin=1.1cm
+}
+
+% -----------------------------------------------------
+% Escolha múltipla: \op[colunas]{letra certa}{a}{b}{c}{d}
+% A opção e) é sempre "Não sei".
+% A letra certa vai para as soluções (só aparecem se
+% \comgabarito estiver definido, ver o fim do ficheiro).
+% -----------------------------------------------------
+
+\settasks{
+    label=\alph*),
+    label-width=1.2em,
+    item-indent=1.6em,
+    column-sep=0.5em,
+    before-skip=0.1cm,
+    after-skip=0.1cm,
+    after-item-skip=0.15cm
+}
+
+\newif\ifgabarito
+\ifdefined\comgabarito \gabaritotrue \fi
+
+\newcounter{nq}
+\providecommand{\totalq}{0}
+
+\makeatletter
+\newcommand*{\gab@lista}{}
+\newcommand*{\resp}[1]{%
+    \stepcounter{nq}%
+    \protected@edef\gab@tmp{\@currentlabel}%
+    \xdef\gab@lista{\unexpanded\expandafter{\gab@lista}%
+        \noexpand\gabitem{\gab@tmp}{#1}}}
+\newcommand*{\gabitem}[2]{\makebox[2.4em][l]{#1}\textbf{#2}\par}
+\newcommand{\gabarito}{%
+    \begin{multicols}{6}\gab@lista\end{multicols}}
+% número total de questões, para a folha de respostas
+\AtEndDocument{\immediate\write\@auxout{\gdef\string\totalq{\the\value{nq}}}}
+\makeatother
+
+\NewDocumentCommand{\op}{O{5} m +m +m +m +m}{%
+    \resp{#2}%
+    \begin{tasks}(#1)
+        \task #3
+        \task #4
+        \task #5
+        \task #6
+        \task Não sei
+    \end{tasks}}
+
+% -----------------------------------------------------
+% Folha de respostas: 5 colunas, uma bolha por opção
+% -----------------------------------------------------
+
+\newcommand{\bolha}[1]{%
+    \tikz[baseline=-0.6ex]\node[circle, draw, minimum size=0.42cm,
+        inner sep=0pt, font=\scriptsize] {#1};}
+\newcommand{\bolhacheia}{%
+    \tikz[baseline=-0.6ex]\node[circle, draw, fill=black,
+        minimum size=0.42cm, inner sep=0pt] {};}
+
+\newcommand{\folharespostas}{%
+    \ifnum\totalq>0
+    \pgfmathtruncatemacro{\linhas}{ceil(\totalq/5)}%
+    \begin{tikzpicture}[x=1cm, y=-0.64cm]
+        \foreach \q in {1,...,\totalq} {
+            \pgfmathtruncatemacro{\col}{(\q - 1)/\linhas}
+            \pgfmathtruncatemacro{\lin}{mod(\q - 1, \linhas)}
+            \begin{scope}[shift={(\col*3.4,\lin)}]
+                \ifodd\lin
+                    \fill[gray!12] (-0.05,-0.5) rectangle (3.3,0.5);
+                \fi
+                \node[anchor=east, font=\small\bfseries] at (0.78,0) {\q};
+                \foreach \letra [count=\k] in {a,b,c,d,e}
+                    \node[circle, draw, fill=white, minimum size=0.42cm,
+                        inner sep=0pt, font=\scriptsize] at (0.6 + \k*0.48,0) {\letra};
+            \end{scope}
+        }
+    \end{tikzpicture}%
+    \fi}
+
+% -----------------------------------------------------
+% Figuras
+% -----------------------------------------------------
+
+\newcommand{\fig}[1]{\par{\centering #1\par}\smallskip}
+
+\tikzset{
+    opt/.style={baseline={([yshift=-1.5ex]current bounding box.north)}},
+    >=Stealth
+}
+
+\pgfplotsset{
+    eixos/.style={
+        axis lines=middle,
+        axis line style={-Stealth},
+        xlabel={$x$}, ylabel={$y$},
+        xlabel style={anchor=west, font=\scriptsize},
+        ylabel style={anchor=south, font=\scriptsize},
+        tick label style={font=\scriptsize},
+        samples=120,
+        clip=false
+    },
+    mini/.style={eixos, width=4.1cm, height=3.9cm}
+}
+
+% gráfico pequeno para as opções: \grafo[opções do eixo]{\addplot ...}
+\newcommand{\grafo}[2][]{%
+    \begin{tikzpicture}[opt]
+        \begin{axis}[mini, #1] #2 \end{axis}
+    \end{tikzpicture}}
+
+% gráfico de barras dos valores 1 a 5
+\newcommand{\barras}[1]{%
+    \begin{tikzpicture}[opt]
+        \begin{axis}[ybar, bar width=7pt, width=4.3cm, height=3.6cm,
+            axis lines=left, ymin=0, ymax=9, xmin=0.4, xmax=5.6,
+            xtick={1,...,5}, ytick={2,4,6,8},
+            tick label style={font=\scriptsize},
+            ymajorgrids, grid style={gray!25}]
+            \addplot[fill=gray!45] coordinates {#1};
+        \end{axis}
+    \end{tikzpicture}}
+
+% diagrama de extremos e quartis: \caixa{mín}{Q1}{mediana}{Q3}{máx}
+\newcommand{\caixa}[5]{%
+    \begin{tikzpicture}[opt, x=0.11cm]
+        \draw (8,0) -- (45,0);
+        \foreach \xx in {10,15,...,45} \draw (\xx,0.07) -- (\xx,-0.07);
+        \foreach \xx in {10,20,30,40} \node[below, font=\scriptsize] at (\xx,-0.07) {\xx};
+        \draw (#1,0.55) -- (#2,0.55) (#4,0.55) -- (#5,0.55);
+        \draw (#1,0.4) -- (#1,0.7) (#5,0.4) -- (#5,0.7);
+        \draw[fill=gray!20] (#2,0.3) rectangle (#4,0.8);
+        \draw[thick] (#3,0.3) -- (#3,0.8);
+    \end{tikzpicture}}
+
+\begin{document}
+
+\begin{center}
+    {\Large \textbf{Prova de Nivelamento — Matemática}}
+\end{center}
+
+\vspace{0.2cm}
+
+\textbf{Instruções.} Cada questão tem cinco opções e só uma está correta.
+Marca as respostas na \textbf{folha de respostas}, no fim da prova.
+Se não souberes responder, marca a opção \textbf{e) Não sei} — não tentes adivinhar.
+Podes usar folha de rascunho.
+
+% =====================================================
+\section*{Parte I — Ensino Básico}
+% =====================================================
+
+\subsection*{1. Cálculo Numérico}
+
+\textbf{Resolve sem calculadora.}
+
+\begin{questoes}
+    \item Na reta numérica, que número
+    está exatamente a meio caminho
+    entre $36$ e $54$?
+    \fig{\begin{tikzpicture}[x=0.5cm]
+        \draw[->] (-0.5,0) -- (22.6,0);
+        \foreach \xx in {0,...,22} \draw (\xx,0.08) -- (\xx,-0.08);
+        \fill (2,0) circle (2pt) node[below=3pt] {$36$};
+        \fill (20,0) circle (2pt) node[below=3pt] {$54$};
+        \node[above=2pt] at (11,0) {$?$};
+    \end{tikzpicture}}
+    \op{b}{$18$}{$45$}{$44$}{$90$}
+
+    \item $7\,003 - 2\,458 =$
+    \op{a}{$4\,545$}{$5\,455$}{$4\,555$}{$4\,645$}
+
+    \item $346 \times 27 =$
+    \op{b}{$3\,114$}{$9\,342$}{$9\,242$}{$8\,342$}
+
+    \item Na divisão inteira de $257$ por $9$,
+    quais são o quociente e o resto?
+    \op[2]{c}{quociente $27$, resto $14$}{quociente $28$, resto $6$}{quociente $28$, resto $5$}{quociente $29$, resto $2$}
+
+    \item $5 + 3 \times \left[\, 12 - (8 - 2) \div 3 \,\right] =$
+    \op{c}{$80$}{$11$}{$35$}{$47$}
+
+    \item Quais são todos os divisores de $36$?
+    \op[2]{d}{$2, 3, 4, 6, 9, 12, 18$}{$36, 72, 108, 144$}{$1, 2, 3, 4, 6, 8, 9, 12, 18, 36$}{$1, 2, 3, 4, 6, 9, 12, 18, 36$}
+
+    \item Determina $\mathrm{m.d.c.}(84,\,126)$
+    e $\mathrm{m.m.c.}(12,\,18)$.
+    \op[2]{c}{m.d.c.\ $=21$; m.m.c.\ $=216$}{m.d.c.\ $=14$; m.m.c.\ $=36$}{m.d.c.\ $=42$; m.m.c.\ $=36$}{m.d.c.\ $=42$; m.m.c.\ $=216$}
+
+    \item $-3 - (-10) + (-4) =$
+    \op{c}{$-17$}{$-9$}{$3$}{$11$}
+
+    \item Calcula $(-3)^2$, $-3^2$ e $(-2)^3$.
+    \op[3]{d}{$9$; $9$; $-8$}{$-9$; $-9$; $8$}{$9$; $-9$; $8$}{$9$; $-9$; $-8$}
+
+    \item Escreve na forma de uma só potência:
+    $2^3 \times 2^4$; \ $5^7 \div 5^2$; \ $\left(3^2\right)^3$.
+    \op[3]{b}{$2^{12}$; $5^{9}$; $3^{5}$}{$2^{7}$; $5^{5}$; $3^{6}$}{$4^{7}$; $1^{5}$; $3^{9}$}{$2^{7}$; $5^{9}$; $3^{6}$}
+\end{questoes}
+
+\subsection*{2. Frações e Decimais}
+
+\textbf{As frações das opções estão na forma irredutível.}
+
+\begin{questoes}[resume]
+    \item Compara
+    $\dfrac{3}{4}$ com $\dfrac{5}{7}$ e
+    $\dfrac{2}{3}$ com $\dfrac{8}{12}$.
+    \op[2]{b}{$\dfrac{3}{4} < \dfrac{5}{7}$ e $\dfrac{2}{3} = \dfrac{8}{12}$}{$\dfrac{3}{4} > \dfrac{5}{7}$ e $\dfrac{2}{3} = \dfrac{8}{12}$}{$\dfrac{3}{4} > \dfrac{5}{7}$ e $\dfrac{2}{3} < \dfrac{8}{12}$}{$\dfrac{3}{4} = \dfrac{5}{7}$ e $\dfrac{2}{3} > \dfrac{8}{12}$}
+
+    \item $\dfrac{5}{6} - \dfrac{3}{8} =$
+    \op{c}{$\dfrac{1}{7}$}{$\dfrac{1}{12}$}{$\dfrac{11}{24}$}{$\dfrac{11}{48}$}
+
+    \item $\dfrac{5}{6} \div \dfrac{10}{3} =$
+    \op{d}{$\dfrac{25}{9}$}{$4$}{$\dfrac{50}{9}$}{$\dfrac{1}{4}$}
+
+    \item $\left(-\dfrac{2}{3}\right) \times \dfrac{9}{4} =$
+    \op{a}{$-\dfrac{3}{2}$}{$\dfrac{3}{2}$}{$-\dfrac{8}{27}$}{$-\dfrac{7}{12}$}
+
+    \item Escreve na forma de dízima:
+    $\dfrac{3}{4}$, $\dfrac{7}{20}$ e $\dfrac{2}{3}$.
+    \op[2]{c}{$0{,}75$; $0{,}7$; $0{,}6$}{$0{,}34$; $0{,}72$; $0{,}23$}{$0{,}75$; $0{,}35$; $0{,}(6)$}{$0{,}75$; $0{,}35$; $0{,}66$}
+
+    \item Escreve na forma de fração irredutível:
+    $0{,}45$ e $1{,}25$.
+    \op{a}{$\dfrac{9}{20}$ e $\dfrac{5}{4}$}{$\dfrac{45}{10}$ e $\dfrac{125}{10}$}{$\dfrac{9}{2}$ e $\dfrac{5}{4}$}{$\dfrac{9}{20}$ e $\dfrac{1}{4}$}
+
+    \item $7{,}2 \div 0{,}08 =$
+    \op{a}{$90$}{$9$}{$0{,}9$}{$900$}
+
+    \item Calcula $2^{-3}$ e $\left(\dfrac{2}{3}\right)^{-2}$.
+    \op{b}{$-8$ e $\dfrac{4}{9}$}{$\dfrac{1}{8}$ e $\dfrac{9}{4}$}{$\dfrac{1}{6}$ e $-\dfrac{4}{9}$}{$\dfrac{1}{8}$ e $\dfrac{4}{9}$}
+
+    \item Calcula
+    $\left(3 \times 10^{5}\right) \times \left(4 \times 10^{-2}\right)$
+    em notação científica.
+    \op[3]{d}{$1{,}2 \times 10^{3}$}{$12 \times 10^{-10}$}{$7 \times 10^{3}$}{$1{,}2 \times 10^{4}$}
+\end{questoes}
+
+\subsection*{3. Percentagem e Proporcionalidade}
+
+\begin{questoes}[resume]
+    \item Escreve $35\%$ na forma de fração irredutível
+    e na forma de dízima.
+    \op{c}{$\dfrac{7}{2}$ e $0{,}035$}{$\dfrac{1}{35}$ e $0{,}35$}{$\dfrac{7}{20}$ e $0{,}35$}{$\dfrac{7}{20}$ e $3{,}5$}
+
+    \item $15\%$ de $240$ é:
+    \op{a}{$36$}{$16$}{$24$}{$3{,}6$}
+
+    \item Um valor passou de $50$ para $60$.
+    Qual foi a percentagem de aumento?
+    \op{b}{$10\%$}{$20\%$}{$16{,}7\%$}{$120\%$}
+
+    \item Determina $x$ de modo que
+    $\dfrac{4}{x} = \dfrac{10}{25}$.
+    \op{c}{$1{,}6$}{$62{,}5$}{$10$}{$19$}
+
+    \item Na tabela, $y$ é diretamente proporcional a $x$?
+
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        $x$ & $2$ & $4$ & $6$ \\
+        \hline
+        $y$ & $7$ & $14$ & $21$ \\
+        \hline
+    \end{tabular}
+
+    \op[2]{b}{Não}{Sim; \ $y = 3{,}5\,x$}{Sim; \ $y = 7x$}{Sim; \ $y = \dfrac{2}{7}\,x$}
+
+    \item Na tabela, $y$ é inversamente proporcional a $x$.
+    Qual é a expressão de $y$ em função de $x$?
+
+    \begin{tabular}{|c|c|c|c|}
+        \hline
+        $x$ & $2$ & $3$ & $5$ \\
+        \hline
+        $y$ & $30$ & $20$ & $12$ \\
+        \hline
+    \end{tabular}
+
+    \op[2]{b}{$y = -10x + 50$}{$y = \dfrac{60}{x}$}{$y = \dfrac{x}{60}$}{$y = 60x$}
+\end{questoes}
+
+\subsection*{4. Álgebra}
+
+\begin{questoes}[resume]
+    \item Qual é o termo geral da sequência
+    $5,\ 8,\ 11,\ 14,\ \ldots$?
+    \op{d}{$n + 3$}{$3n + 5$}{$5n + 3$}{$3n + 2$}
+
+    \item $\left(x^2 - 3x + 2\right) - \left(2x^2 + x - 5\right) =$
+    \op[2]{d}{$-x^2 - 2x - 3$}{$3x^2 - 2x - 3$}{$-x^2 - 4x - 3$}{$-x^2 - 4x + 7$}
+
+    \item Resolve $2(x - 3) = 5x + 9$.
+    \op{c}{$x = 5$}{$x = -1$}{$x = -5$}{$x = 1$}
+
+    \item Resolve $\dfrac{x}{2} - \dfrac{x - 1}{3} = 1$.
+    \op{d}{$x = 8$}{$x = 2$}{$x = 0$}{$x = 4$}
+
+    \item Resolve $A = \dfrac{b\,h}{2}$ em ordem a $h$.
+    \op{c}{$h = \dfrac{A}{2b}$}{$h = 2Ab$}{$h = \dfrac{2A}{b}$}{$h = \dfrac{b}{2A}$}
+
+    \item Escreve a dízima $0{,}(3)$ na forma de fração.
+    \op{d}{$\dfrac{3}{10}$}{$\dfrac{33}{100}$}{$\dfrac{1}{30}$}{$\dfrac{1}{3}$}
+
+    \item Quais dos números
+    $\sqrt{16}$, $\sqrt{7}$, $\pi$, $0{,}(12)$ e
+    $\dfrac{2}{9}$ são irracionais?
+    \op[2]{a}{$\sqrt{7}$ e $\pi$}{$\sqrt{16}$ e $\sqrt{7}$}{$\pi$ e $0{,}(12)$}{$\sqrt{7}$, $\pi$ e $\dfrac{2}{9}$}
+
+    \item $\left[-1,\, 4\right[ \,\cap\, \left]2,\, 6\right] =$
+    \op{c}{$[-1,\, 6]$}{$[2,\, 4]$}{$]2,\, 4[$}{$]2,\, 4]$}
+
+    \item Resolve $\dfrac{x - 1}{2} \leq x + 3$.
+    \op[3]{d}{$]-\infty,\, -7]$}{$[7,\, +\infty[$}{$]-7,\, +\infty[$}{$[-7,\, +\infty[$}
+
+    \item Desenvolve: $(x + 3)^2$; \ $(2x - 1)^2$; \ $(x - 5)(x + 5)$.
+    \op[1]{b}{$x^2 + 9$; \ $4x^2 - 1$; \ $x^2 - 25$}{$x^2 + 6x + 9$; \ $4x^2 - 4x + 1$; \ $x^2 - 25$}{$x^2 + 6x + 9$; \ $4x^2 - 2x + 1$; \ $x^2 + 25$}{$x^2 + 3x + 9$; \ $4x^2 - 4x - 1$; \ $x^2 - 10x - 25$}
+
+    \item Fatoriza: $x^2 - 49$; \ $3x^2 - 12x$; \ $x^2 + 6x + 9$.
+    \op[1]{c}{$(x - 7)^2$; \ $3x(x - 12)$; \ $(x + 3)^2$}{$(x - 7)(x + 7)$; \ $3(x^2 - 4x)$; \ $(x + 9)(x + 1)$}{$(x - 7)(x + 7)$; \ $3x(x - 4)$; \ $(x + 3)^2$}{$(x - 49)(x + 1)$; \ $3x(x - 4)$; \ $(x + 3)(x - 3)$}
+
+    \item Resolve $2x^2 - 3x - 2 = 0$.
+    \op[2]{a}{$x = 2$ ou $x = -\dfrac{1}{2}$}{$x = -2$ ou $x = \dfrac{1}{2}$}{$x = 1$ ou $x = -2$}{$x = 2$ ou $x = \dfrac{1}{2}$}
+
+    \item Quantas soluções tem $x^2 + 2x + 5 = 0$?
+    \op[2]{c}{Duas, porque $\Delta > 0$}{Uma, porque $\Delta = 0$}{Nenhuma, porque $\Delta < 0$}{Duas, porque $\Delta < 0$}
+
+    \item Resolve
+    $\begin{cases} 2x + 3y = 12 \\ x - 2y = -1 \end{cases}$
+    \op[3]{b}{$(x,\,y) = (2,\,3)$}{$(x,\,y) = (3,\,2)$}{$(x,\,y) = (-3,\,6)$}{$(x,\,y) = (6,\,0)$}
+
+    \item Qual é a equação reduzida da reta representada?
+    \fig{\begin{tikzpicture}
+        \begin{axis}[eixos, width=5.2cm, height=5.6cm,
+            xmin=-2, xmax=3.5, ymin=-1, ymax=9.5,
+            xtick={-1,1,2,3}, ytick={1,...,9},
+            grid=major, grid style={gray!20}]
+            \addplot[thick, domain=-2:3] {2*x + 3};
+            \addplot[only marks, mark=*] coordinates {(0,3) (2,7)};
+        \end{axis}
+    \end{tikzpicture}}
+    \op{a}{$y = 2x + 3$}{$y = \dfrac{1}{2}x + 3$}{$y = 4x + 3$}{$y = 2x + 7$}
+
+    \item Qual dos gráficos representa a função $y = -x^2$?
+    \op[3]{c}{\grafo[xmin=-3, xmax=3, ymin=-4.5, ymax=4.5, xtick={-2,2}, ytick={-4,-2,2,4}]{\addplot[thick, domain=-2.1:2.1] {x^2};}}{\grafo[xmin=-3, xmax=3, ymin=-4.5, ymax=4.5, xtick={-2,2}, ytick={-4,-2,2,4}]{\addplot[thick, domain=-2.4:2.4] {-x^2 + 2};}}{\grafo[xmin=-3, xmax=3, ymin=-4.5, ymax=4.5, xtick={-2,2}, ytick={-4,-2,2,4}]{\addplot[thick, domain=-2.1:2.1] {-x^2};}}{\grafo[xmin=-3, xmax=3, ymin=-4.5, ymax=4.5, xtick={-2,2}, ytick={-4,-2,2,4}]{\addplot[thick, domain=-0.1:3] {-(x - 1)^2};}}
+
+    \item A figura representa as retas do sistema
+    $\begin{cases} y = 3x + 1 \\ y = 3x - 2 \end{cases}$.
+    Classifica o sistema.
+    \fig{\begin{tikzpicture}
+        \begin{axis}[eixos, width=5cm, height=5.4cm,
+            xmin=-2, xmax=2.2, ymin=-4.5, ymax=5,
+            xtick={-1,1}, ytick={-2,1}]
+            \addplot[thick, domain=-1.8:1.3] {3*x + 1}
+                node[pos=1, left, font=\scriptsize] {$y = 3x + 1$};
+            \addplot[thick, dashed, domain=-0.8:2] {3*x - 2}
+                node[pos=1, right, font=\scriptsize] {$y = 3x - 2$};
+        \end{axis}
+    \end{tikzpicture}}
+    \op[1]{a}{Impossível (retas paralelas)}{Possível e indeterminado (retas coincidentes)}{Possível e determinado, com solução $(0,\,0)$}{Possível e determinado (retas perpendiculares)}
+\end{questoes}
+
+\subsection*{5. Geometria}
+
+\textbf{Usa $\pi \approx 3{,}14$.
+Os valores aproximados estão arredondados às centésimas.
+As figuras não estão à escala.}
+
+\begin{questoes}[resume]
+    \item O complementar e o suplementar de um ângulo de $35^\circ$ medem:
+    \op[3]{b}{$145^\circ$ e $55^\circ$}{$55^\circ$ e $145^\circ$}{$65^\circ$ e $155^\circ$}{$55^\circ$ e $325^\circ$}
+
+    \item As retas $r$ e $s$ são paralelas.
+    Qual é a amplitude dos outros sete ângulos?
+    \fig{\begin{tikzpicture}
+        \draw[thick] (-2.4,0) -- (3,0) node[right] {$r$};
+        \draw[thick] (-2.4,1.6) -- (3,1.6) node[right] {$s$};
+        \draw[thick] ($(0,0) + (245:1.1)$) -- ($(0.746,1.6) + (65:1.1)$) node[above] {$t$};
+        \draw (0.5,0) arc (0:65:0.5);
+        \node at (32:0.85) {\small $65^\circ$};
+    \end{tikzpicture}}
+    \op[2]{c}{Todos medem $65^\circ$}{Três de $65^\circ$ e quatro de $25^\circ$}{Três de $65^\circ$ e quatro de $115^\circ$}{Um de $65^\circ$ e seis de $115^\circ$}
+
+    \item Determina $x$.
+    \fig{\begin{tikzpicture}
+        \draw[thick] (-2.8,0) -- (2.8,0);
+        \draw[thick] (235:2.8) -- (55:2.8);
+        \draw (0.45,0) arc (0:55:0.45);
+        \draw (-0.45,0) arc (180:235:0.45);
+        \node[font=\footnotesize] at (24:1.9) {$(3x + 10)^\circ$};
+        \node[font=\footnotesize] at (204:1.9) {$(5x - 20)^\circ$};
+    \end{tikzpicture}}
+    \op{d}{$5$}{$23{,}75$}{$30$}{$15$}
+
+    \item Determina o ângulo desconhecido
+    e classifica o triângulo quanto aos ângulos.
+    \fig{\begin{tikzpicture}[scale=0.8]
+        \coordinate (A) at (0,0);
+        \coordinate (B) at (5,0);
+        \coordinate (C) at (3.488,3.741);
+        \draw[thick] (A) -- (B) -- (C) -- cycle;
+        \draw (0.6,0) arc (0:47:0.6);
+        \node at (23.5:1.1) {\small $47^\circ$};
+        \draw ($(B) + (-0.6,0)$) arc (180:112:0.6);
+        \node at ($(B) + (146:1.1)$) {\small $68^\circ$};
+        \draw ($(C) + (227:0.5)$) arc (227:292:0.5);
+        \node at ($(C) + (259.5:0.9)$) {$?$};
+    \end{tikzpicture}}
+    \op[2]{a}{$65^\circ$; acutângulo}{$65^\circ$; obtusângulo}{$75^\circ$; acutângulo}{$115^\circ$; obtusângulo}
+
+    \item Qual é a soma dos ângulos internos de um hexágono
+    e a amplitude de cada ângulo interno do hexágono regular?
+    \fig{\begin{tikzpicture}
+        \draw[thick] (0:1) -- (60:1) -- (120:1) -- (180:1) -- (240:1) -- (300:1) -- cycle;
+    \end{tikzpicture}}
+    \op[2]{b}{$540^\circ$ e $108^\circ$}{$720^\circ$ e $120^\circ$}{$720^\circ$ e $60^\circ$}{$1\,080^\circ$ e $120^\circ$}
+
+    \item Determina a área do trapézio.
+    \fig{\begin{tikzpicture}[scale=0.3]
+        \draw[thick] (0,0) -- (10,0) -- (8,4) -- (2,4) -- cycle;
+        \draw[dashed] (2,4) -- (2,0);
+        \draw (2,0.6) -- (2.6,0.6) -- (2.6,0);
+        \node[below] at (5,0) {\small $10$ cm};
+        \node[above] at (5,4) {\small $6$ cm};
+        \node[right] at (2,2) {\small $4$ cm};
+    \end{tikzpicture}}
+    \op{a}{$32$ cm$^2$}{$64$ cm$^2$}{$240$ cm$^2$}{$20$ cm$^2$}
+
+    \item Determina a área do losango,
+    cujas diagonais medem $10$ cm e $8$ cm.
+    \fig{\begin{tikzpicture}[scale=0.3]
+        \draw[thick] (-5,0) -- (0,4) -- (5,0) -- (0,-4) -- cycle;
+        \draw[dashed] (-5,0) -- (5,0) (0,-4) -- (0,4);
+    \end{tikzpicture}}
+    \op{c}{$80$ cm$^2$}{$18$ cm$^2$}{$40$ cm$^2$}{$20$ cm$^2$}
+
+    \item Determina o perímetro da circunferência
+    e a área do círculo de raio $5$ cm.
+    \fig{\begin{tikzpicture}
+        \draw[thick] (0,0) circle (1.1);
+        \fill (0,0) circle (1.5pt) node[below left] {\small $O$};
+        \draw (0,0) -- (1.1,0) node[midway, above] {\small $5$ cm};
+    \end{tikzpicture}}
+    \op[2]{b}{$15{,}7$ cm e $78{,}5$ cm$^2$}{$31{,}4$ cm e $78{,}5$ cm$^2$}{$31{,}4$ cm e $314$ cm$^2$}{$78{,}5$ cm e $31{,}4$ cm$^2$}
+
+    \item A figura é formada por um quadrado
+    de lado $6$ cm e por um semicírculo.
+    Determina a área e o perímetro da figura.
+    \fig{\begin{tikzpicture}[scale=0.4]
+        \draw[thick] (6,6) -- (6,0) -- (0,0) -- (0,6);
+        \draw[thick] (6,6) arc (0:180:3);
+        \draw[dashed] (0,6) -- (6,6);
+        \node[below] at (3,0) {\small $6$ cm};
+    \end{tikzpicture}}
+    \op[2]{c}{$A = 64{,}26$ cm$^2$; \ $P = 42{,}84$ cm}{$A = 50{,}13$ cm$^2$; \ $P = 33{,}42$ cm}{$A = 50{,}13$ cm$^2$; \ $P = 27{,}42$ cm}{$A = 45{,}42$ cm$^2$; \ $P = 27{,}42$ cm}
+
+    \item Considera o ponto $A(2,\,3)$ e o vetor $\vec{u}(-4,\,1)$.
+    Indica, por esta ordem, a imagem de $A$
+    pela reflexão de eixo $Ox$,
+    pela reflexão de eixo $Oy$,
+    pela rotação de centro $O$ e amplitude $180^\circ$
+    e pela translação de vetor $\vec{u}$.
+    \fig{\begin{tikzpicture}[scale=0.42]
+        \draw[gray!25] (-5,-5) grid (5,5);
+        \draw[->] (-5.5,0) -- (5.8,0) node[right] {\scriptsize $x$};
+        \draw[->] (0,-5.5) -- (0,5.8) node[above] {\scriptsize $y$};
+        \node[below left, font=\tiny] at (0,0) {$O$};
+        \foreach \xx in {-4,-2,2,4} {
+            \node[below, font=\tiny] at (\xx,0) {$\xx$};
+            \node[left, font=\tiny] at (0,\xx) {$\xx$};
+        }
+        \fill (2,3) circle (4pt) node[above right] {$A$};
+        \draw[->, thick] (4,-4) -- (0,-3) node[midway, above] {\scriptsize $\vec{u}$};
+    \end{tikzpicture}}
+    \op[1]{d}{$(-2,\,3)$; \ $(2,\,-3)$; \ $(-2,\,-3)$; \ $(-2,\,4)$}{$(2,\,-3)$; \ $(-2,\,3)$; \ $(3,\,2)$; \ $(6,\,2)$}{$(2,\,-3)$; \ $(-2,\,3)$; \ $(-2,\,-3)$; \ $(6,\,4)$}{$(2,\,-3)$; \ $(-2,\,3)$; \ $(-2,\,-3)$; \ $(-2,\,4)$}
+
+    \item Os triângulos de lados $3$, $4$, $5$ e $6$, $x$, $y$
+    (com $x < y$) são semelhantes.
+    Determina $x$, $y$ e a razão entre as áreas
+    (do maior para o menor).
+    \op[2]{a}{$x = 8$, $y = 10$; \ razão das áreas $4$}{$x = 7$, $y = 8$; \ razão das áreas $2$}{$x = 8$, $y = 10$; \ razão das áreas $2$}{$x = 12$, $y = 15$; \ razão das áreas $9$}
+
+    \item Na figura, $[DE]$ é paralelo a $[BC]$.
+    Determina $\overline{EC}$.
+    \fig{\begin{tikzpicture}
+        \coordinate (A) at (1.5,3.6);
+        \coordinate (B) at (0,0);
+        \coordinate (C) at (4,0);
+        \coordinate (D) at (0.9,2.16);
+        \coordinate (E) at (2.5,2.16);
+        \draw[thick] (A) -- (B) -- (C) -- cycle;
+        \draw[thick] (D) -- (E);
+        \node[above] at (A) {$A$};
+        \node[below left] at (B) {$B$};
+        \node[below right] at (C) {$C$};
+        \node[left] at (D) {$D$};
+        \node[right] at (E) {$E$};
+        \node[left, font=\small] at ($(A)!0.5!(D)$) {$4$};
+        \node[left, font=\small] at ($(D)!0.5!(B)$) {$6$};
+        \node[right, font=\small] at ($(A)!0.5!(E)$) {$5$};
+        \node[right, font=\small] at ($(E)!0.5!(C)$) {$?$};
+    \end{tikzpicture}}
+    \op{b}{$3{,}33$}{$7{,}5$}{$4{,}8$}{$7$}
+
+    \item Determina a hipotenusa.
+    \fig{\begin{tikzpicture}[scale=0.3]
+        \draw[thick] (0,0) -- (12,0) -- (0,9) -- cycle;
+        \draw (0.8,0) -- (0.8,0.8) -- (0,0.8);
+        \node[below] at (6,0) {\small $12$ cm};
+        \node[left] at (0,4.5) {\small $9$ cm};
+        \node[above right] at (6,4.5) {$?$};
+    \end{tikzpicture}}
+    \op{c}{$21$ cm}{$225$ cm}{$15$ cm}{$\sqrt{63}$ cm}
+
+    \item O ângulo ao centro $AOB$ mede $80^\circ$.
+    Quanto mede o ângulo inscrito $APB$?
+    \fig{\begin{tikzpicture}
+        \draw[thick] (0,0) circle (1.3);
+        \coordinate (O) at (0,0);
+        \coordinate (A) at (-40:1.3);
+        \coordinate (B) at (40:1.3);
+        \coordinate (P) at (175:1.3);
+        \draw (A) -- (O) -- (B) (A) -- (P) -- (B);
+        \fill (O) circle (1.3pt) node[left] {\small $O$};
+        \node[below right] at (A) {$A$};
+        \node[above right] at (B) {$B$};
+        \node[left] at (P) {$P$};
+        \draw (-40:0.35) arc (-40:40:0.35);
+        \node at (0.62,0) {\scriptsize $80^\circ$};
+        \node at ($(P) + (0.6,0)$) {\scriptsize $?$};
+    \end{tikzpicture}}
+    \op{d}{$160^\circ$}{$80^\circ$}{$100^\circ$}{$40^\circ$}
+
+    \item Quantas faces ($F$), arestas ($A$)
+    e vértices ($V$) tem o prisma pentagonal?
+    \fig{\begin{tikzpicture}
+        \foreach \k/\ang in {1/18,2/90,3/162,4/234,5/306} {
+            \coordinate (b\k) at ({1.4*cos(\ang)},{0.5*sin(\ang)});
+            \coordinate (t\k) at ({1.4*cos(\ang)},{0.5*sin(\ang)+2});
+        }
+        \draw[thick] (t1) -- (t2) -- (t3) -- (t4) -- (t5) -- cycle;
+        \draw[thick] (b3) -- (b4) -- (b5) -- (b1);
+        \draw[dashed] (b1) -- (b2) -- (b3);
+        \draw[thick] (b1) -- (t1) (b3) -- (t3) (b4) -- (t4) (b5) -- (t5);
+        \draw[dashed] (b2) -- (t2);
+    \end{tikzpicture}}
+    \op[2]{b}{$F = 7$, \ $A = 10$, \ $V = 15$}{$F = 7$, \ $A = 15$, \ $V = 10$}{$F = 6$, \ $A = 15$, \ $V = 10$}{$F = 5$, \ $A = 10$, \ $V = 10$}
+
+    \item Determina a geratriz $g$ e o volume do cone.
+    \fig{\begin{tikzpicture}
+        \draw[thick] (-1.2,0) arc (180:360:1.2 and 0.35);
+        \draw[dashed] (1.2,0) arc (0:180:1.2 and 0.35);
+        \draw[thick] (-1.2,0) -- (0,1.8) -- (1.2,0);
+        \draw[dashed] (0,0) -- (0,1.8) node[midway, left, font=\scriptsize] {$4$ cm};
+        \draw[dashed] (0,0) -- (1.2,0) node[midway, below, font=\scriptsize] {$3$ cm};
+        \node[right, font=\scriptsize] at (0.6,0.95) {$g$};
+    \end{tikzpicture}}
+    \op[2]{d}{$g = 7$ cm; \ $V = 113{,}04$ cm$^3$}{$g = 5$ cm; \ $V = 113{,}04$ cm$^3$}{$g = \sqrt{7}$ cm; \ $V = 37{,}68$ cm$^3$}{$g = 5$ cm; \ $V = 37{,}68$ cm$^3$}
+
+    \item Determina o volume da esfera de raio $6$ cm.
+    \op[3]{a}{$904{,}32$ cm$^3$}{$452{,}16$ cm$^3$}{$678{,}24$ cm$^3$}{$2\,712{,}96$ cm$^3$}
+
+    \item No cubo $[ABCDEFGH]$, quais são as arestas
+    não complanares?
+    \fig{\begin{tikzpicture}[scale=1.1]
+        \coordinate (A) at (0,0);
+        \coordinate (B) at (2.2,0);
+        \coordinate (C) at (3.1,0.8);
+        \coordinate (D) at (0.9,0.8);
+        \coordinate (E) at (0,2.2);
+        \coordinate (F) at (2.2,2.2);
+        \coordinate (G) at (3.1,3.0);
+        \coordinate (H) at (0.9,3.0);
+        \draw[thick] (A) -- (B) -- (C) -- (G) -- (H) -- (E) -- cycle;
+        \draw[thick] (E) -- (F) -- (G) (B) -- (F);
+        \draw[dashed] (A) -- (D) -- (C) (D) -- (H);
+        \node[below left] at (A) {$A$};
+        \node[below right] at (B) {$B$};
+        \node[right] at (C) {$C$};
+        \node[above left, xshift=-1pt] at (D) {$D$};
+        \node[left] at (E) {$E$};
+        \node[below right] at (F) {$F$};
+        \node[above right] at (G) {$G$};
+        \node[above left] at (H) {$H$};
+    \end{tikzpicture}}
+    \op[3]{c}{$[AB]$ e $[CD]$}{$[AB]$ e $[EF]$}{$[AB]$ e $[CG]$}{$[AE]$ e $[AD]$}
+
+    \item Determina $\sin\alpha$, $\cos\alpha$ e $\tan\alpha$.
+    \fig{\begin{tikzpicture}[scale=0.7]
+        \draw[thick] (0,0) -- (4,0) -- (4,3) -- cycle;
+        \draw (3.6,0) -- (3.6,0.4) -- (4,0.4);
+        \draw (0.7,0) arc (0:36.87:0.7);
+        \node at (18:1.05) {\small $\alpha$};
+        \node[below] at (2,0) {$4$};
+        \node[right] at (4,1.5) {$3$};
+        \node[above left] at (2,1.5) {$5$};
+    \end{tikzpicture}}
+    \op[2]{d}{$\dfrac{4}{5}$; \ $\dfrac{3}{5}$; \ $\dfrac{4}{3}$}{$\dfrac{3}{4}$; \ $\dfrac{4}{5}$; \ $\dfrac{3}{5}$}{$\dfrac{3}{5}$; \ $\dfrac{4}{5}$; \ $\dfrac{4}{3}$}{$\dfrac{3}{5}$; \ $\dfrac{4}{5}$; \ $\dfrac{3}{4}$}
+
+    \item Determina $h$ (usa $\tan 35^\circ \approx 0{,}70$).
+    \fig{\begin{tikzpicture}
+        \draw[thick] (0,0) -- (4,0) -- (4,2.8) -- cycle;
+        \draw (3.75,0) -- (3.75,0.25) -- (4,0.25);
+        \draw (0.8,0) arc (0:35:0.8);
+        \node[font=\scriptsize] at (1.15,0.3) {$35^\circ$};
+        \node[below, font=\small] at (2,0) {$20$};
+        \node[right] at (4,1.4) {$h$};
+    \end{tikzpicture}}
+    \op[3]{c}{$11{,}47$}{$16{,}38$}{$14{,}00$}{$28{,}56$}
+\end{questoes}
+
+\subsection*{6. Estatística e Probabilidades}
+
+\textbf{As probabilidades das opções estão na forma de fração irredutível.}
+
+\begin{questoes}[resume]
+    \item[] Considera os dados:
+    $3,\ 4,\ 4,\ 5,\ 3,\ 2,\ 4,\ 5,\ 3,\ 4,\ 3,\ 4,\ 5,\ 4,\ 2,\ 3,\ 4,\ 5,\ 4,\ 3$.
+
+    \item Qual dos gráficos de barras representa
+    a frequência absoluta de cada valor?
+    \op[3]{b}{\barras{(1,0) (2,2) (3,8) (4,6) (5,4)}}{\barras{(1,0) (2,2) (3,6) (4,8) (5,4)}}{\barras{(1,2) (2,6) (3,8) (4,4) (5,0)}}{\barras{(1,0) (2,2) (3,6) (4,8) (5,3)}}
+
+    \item Determina a moda, a média, a mediana
+    e a amplitude destes dados.
+    \op[1]{b}{moda $8$; \ média $3{,}7$; \ mediana $4$; \ amplitude $3$}{moda $4$; \ média $3{,}7$; \ mediana $4$; \ amplitude $3$}{moda $4$; \ média $3{,}5$; \ mediana $3{,}5$; \ amplitude $3$}{moda $4$; \ média $3{,}7$; \ mediana $3$; \ amplitude $5$}
+
+    \item[] Considera os dados:
+    $12,\ 15,\ 18,\ 21,\ 22,\ 25,\ 27,\ 30,\ 34,\ 40,\ 41$.
+
+    \item Determina os quartis e a amplitude
+    interquartil ($AIQ$).
+    \op[1]{c}{$Q_1 = 15$; $Q_2 = 25$; $Q_3 = 40$; $AIQ = 25$}{$Q_1 = 18$; $Q_2 = 25$; $Q_3 = 34$; $AIQ = 29$}{$Q_1 = 18$; $Q_2 = 25$; $Q_3 = 34$; $AIQ = 16$}{$Q_1 = 18$; $Q_2 = 22$; $Q_3 = 34$; $AIQ = 16$}
+
+    \item Qual é o diagrama de extremos e quartis destes dados?
+    \op[3]{a}{\caixa{12}{18}{25}{34}{41}}{\caixa{12}{15}{25}{40}{41}}{\caixa{12}{18}{22}{34}{41}}{\caixa{12}{21}{25}{30}{41}}
+
+    \item Sejam $U = \{1, 2, 3, \ldots, 10\}$,
+    $A = \{1, 2, 3, 4, 6\}$ e $B = \{2, 4, 6, 8, 10\}$.
+    Determina, por esta ordem, $A \cap B$, $A \cup B$,
+    $\overline{A}$ e $A \setminus B$.
+    \op[1]{b}{$\{2, 4, 6\}$; \ $\{1, 2, 3, 4, 6, 8, 10\}$; \ $\{8, 10\}$; \ $\{1, 3\}$}{$\{2, 4, 6\}$; \ $\{1, 2, 3, 4, 6, 8, 10\}$; \ $\{5, 7, 8, 9, 10\}$; \ $\{1, 3\}$}{$\{1, 2, 3, 4, 6, 8, 10\}$; \ $\{2, 4, 6\}$; \ $\{5, 7, 8, 9, 10\}$; \ $\{1, 3\}$}{$\{2, 4, 6\}$; \ $\{1, 2, 3, 4, 6, 8, 10\}$; \ $\{5, 7, 8, 9, 10\}$; \ $\{8, 10\}$}
+
+    \item O conjunto $U$ tem $30$ elementos,
+    $\#A = 18$, $\#B = 12$ e $\#(A \cap B) = 5$.
+    Determina $\#\left(\overline{A \cup B}\right)$.
+    \fig{\begin{tikzpicture}
+        \draw (-2.6,-1.4) rectangle (2.6,1.5);
+        \node[anchor=north west, font=\small] at (-2.6,1.5) {$U$};
+        \draw (-0.6,-0.1) circle (1.05);
+        \draw (0.6,-0.1) circle (1.05);
+        \node at (-1.45,0.85) {$A$};
+        \node at (1.45,0.85) {$B$};
+        \node at (0,-0.1) {$5$};
+    \end{tikzpicture}}
+    \op{a}{$5$}{$0$}{$10$}{$25$}
+
+    \item Lança-se um dado equilibrado (faces de $1$ a $6$).
+    Determina, por esta ordem, a probabilidade de sair
+    um número par, um múltiplo de $3$
+    e o número $7$.
+    \op[3]{c}{$\dfrac{1}{2}$; \ $\dfrac{1}{6}$; \ $0$}{$\dfrac{1}{2}$; \ $\dfrac{1}{3}$; \ $1$}{$\dfrac{1}{2}$; \ $\dfrac{1}{3}$; \ $0$}{$\dfrac{1}{3}$; \ $\dfrac{1}{2}$; \ $0$}
+
+    \item Lançam-se dois dados equilibrados
+    e somam-se os números das faces.
+    Determina a probabilidade de a soma ser $7$
+    e a probabilidade de a soma ser
+    pelo menos $10$.
+    \op[3]{b}{$\dfrac{1}{6}$ e $\dfrac{1}{12}$}{$\dfrac{1}{6}$ e $\dfrac{1}{6}$}{$\dfrac{1}{11}$ e $\dfrac{3}{11}$}{$\dfrac{7}{36}$ e $\dfrac{1}{6}$}
+    \label{ultimaI}
+\end{questoes}
+
+\newpage
+
+% =====================================================
+\section*{Parte II — Ensino Secundário}
+% =====================================================
+
+As questões assinaladas com \textbf{AE2018} ou \textbf{AE2023}
+só se aplicam aos alunos do respetivo programa.
+
+\subsection*{7. Cálculo e Álgebra}
+
+\begin{questoes}[resume]
+    \item \label{primeiraII} \textbf{(AE2018)} Sejam
+    $p$: ``$2$ é primo e $9$ é par'' e
+    $q$: ``se $4$ é par, então $5$ é ímpar''.
+    Qual é o valor lógico de $p$ e de $q$?
+    \op[2]{b}{$p$ verdadeira; \ $q$ verdadeira}{$p$ falsa; \ $q$ verdadeira}{$p$ falsa; \ $q$ falsa}{$p$ verdadeira; \ $q$ falsa}
+
+    \item $\sqrt{50} + \sqrt{18} - \sqrt{8} =$
+    \op{a}{$6\sqrt{2}$}{$\sqrt{60}$}{$10\sqrt{2}$}{$4\sqrt{2}$}
+
+    \item Racionaliza os denominadores:
+    $\dfrac{6}{\sqrt{3}}$ e $\dfrac{4}{\sqrt{5} - 1}$.
+    \op[2]{c}{$6\sqrt{3}$ e $\sqrt{5} - 1$}{$\dfrac{\sqrt{3}}{2}$ e $\sqrt{5} + 1$}{$2\sqrt{3}$ e $\sqrt{5} + 1$}{$2\sqrt{3}$ e $4\left(\sqrt{5} - 1\right)$}
+
+    \item Calcula $8^{2/3}$ e escreve
+    $\sqrt[3]{x^2}$ como potência de expoente racional.
+    \op[3]{b}{$4$ e $x^{3/2}$}{$4$ e $x^{2/3}$}{$\dfrac{16}{3}$ e $x^{2/3}$}{$2$ e $x^{3/2}$}
+
+    \item[] Considera o polinómio
+    $P(x) = 2x^3 - 3x^2 - 11x + 6$.
+
+    \item Divide $P(x)$ por $x - 3$ (regra de Ruffini).
+    Quais são o quociente $Q(x)$ e o resto $R$?
+    \op[2]{d}{$Q(x) = 2x^2 - 9x + 16$; \ $R = -42$}{$Q(x) = 2x^2 + 3x + 2$; \ $R = 0$}{$Q(x) = 2x^3 + 3x^2 - 2x$; \ $R = 0$}{$Q(x) = 2x^2 + 3x - 2$; \ $R = 0$}
+
+    \item Fatoriza completamente $P(x)$.
+    \op[2]{a}{$(x - 3)(2x - 1)(x + 2)$}{$(x + 3)(2x + 1)(x - 2)$}{$(x - 3)(x - 1)(x + 2)$}{$(x - 3)(2x + 1)(x - 2)$}
+
+    \item Resolve $x^2 - x - 6 \leq 0$.
+    \op[2]{c}{$]-\infty,\, -2] \cup [3,\, +\infty[$}{$]-2,\, 3[$}{$[-2,\, 3]$}{$[-3,\, 2]$}
+
+    \item Resolve $(x - 3)(2x - 1)(x + 2) > 0$.
+    \op[2]{d}{$]-\infty,\, -2[ \,\cup\, \left]\dfrac{1}{2},\, 3\right[$}{$]3,\, +\infty[$}{$\left[-2,\, \dfrac{1}{2}\right] \cup [3,\, +\infty[$}{$\left]-2,\, \dfrac{1}{2}\right[ \cup\, ]3,\, +\infty[$}
+\end{questoes}
+
+\subsection*{8. Funções}
+
+\begin{questoes}[resume]
+    \item[] Considera $f(x) = 2x - 1$ e $g(x) = x^2 + 1$.
+
+    \item Determina $(f \circ g)(x)$ e $(g \circ f)(2)$.
+    \op[2]{c}{$4x^2 - 4x + 2$ e $10$}{$2x^2 + 1$ e $9$}{$2x^2 + 1$ e $10$}{$2x^2 + 2$ e $5$}
+
+    \item Determina $f^{-1}(x)$.
+    \op{b}{$\dfrac{1}{2x - 1}$}{$\dfrac{x + 1}{2}$}{$\dfrac{x - 1}{2}$}{$-2x + 1$}
+
+    \item Indica o domínio e o contradomínio
+    de $h(x) = \sqrt{x - 3}$.
+    \op[2]{a}{$D = [3,\, +\infty[$; \ $D' = [0,\, +\infty[$}{$D = ]3,\, +\infty[$; \ $D' = ]0,\, +\infty[$}{$D = \mathbb{R}$; \ $D' = [0,\, +\infty[$}{$D = [-3,\, +\infty[$; \ $D' = [0,\, +\infty[$}
+
+    \item A figura mostra o gráfico de $f(x) = x^2$.
+    O gráfico de $y = f(x + 1) - 4$ obtém-se
+    deste por uma translação de vetor:
+    \fig{\begin{tikzpicture}
+        \begin{axis}[eixos, width=5cm, height=4.4cm,
+            xmin=-3, xmax=3, ymin=-1, ymax=5,
+            xtick={-2,-1,1,2}, ytick={1,2,3,4}]
+            \addplot[thick, domain=-2.1:2.1] {x^2};
+        \end{axis}
+    \end{tikzpicture}}
+    \op{c}{$(1,\,-4)$}{$(-1,\,4)$}{$(-1,\,-4)$}{$(-4,\,-1)$}
+
+    \item Considera $f(x) = -x^2 + 4x + 5$.
+    Determina o vértice, os zeros e o contradomínio de $f$.
+    \op[1]{c}{$V(2,\,9)$; zeros $1$ e $-5$; $D' = [9,\, +\infty[$}{$V(-2,\,-7)$; zeros $-1$ e $5$; $D' = ]-\infty,\, -7]$}{$V(2,\,9)$; zeros $-1$ e $5$; $D' = ]-\infty,\, 9]$}{$V(2,\,9)$; zeros $-1$ e $5$; $D' = [9,\, +\infty[$}
+
+    \item Resolve $|2x - 3| = 5$ e $|x - 1| < 3$.
+    \op[1]{b}{$x = 4$; \ $]-2,\, 4[$}{$x = -1$ ou $x = 4$; \ $]-2,\, 4[$}{$x = -1$ ou $x = 4$; \ $]-\infty,\, -2[ \cup ]4,\, +\infty[$}{$x = 1$ ou $x = -4$; \ $]-4,\, 2[$}
+
+    \item Qual dos gráficos representa
+    $f(x) = \begin{cases} x + 1 & \text{se } x < 0 \\ x^2 & \text{se } x \geq 0 \end{cases}$?
+    \op[3]{b}{\grafo[xmin=-3, xmax=2.5, ymin=-4.5, ymax=4.5, xtick={-2,2}, ytick={-4,-2,2,4}]{
+        \addplot[thick, domain=-2:0] {x^2};
+        \addplot[thick, domain=0:2.4] {x + 1};
+        \addplot[only marks, mark=*, mark options={fill=white}] coordinates {(0,0)};
+        \addplot[only marks, mark=*] coordinates {(0,1)};}}{\grafo[xmin=-3, xmax=2.5, ymin=-4.5, ymax=4.5, xtick={-2,2}, ytick={-4,-2,2,4}]{
+        \addplot[thick, domain=-3:0] {x + 1};
+        \addplot[thick, domain=0:2] {x^2};
+        \addplot[only marks, mark=*, mark options={fill=white}] coordinates {(0,1)};
+        \addplot[only marks, mark=*] coordinates {(0,0)};}}{\grafo[xmin=-3, xmax=2.5, ymin=-4.5, ymax=4.5, xtick={-2,2}, ytick={-4,-2,2,4}]{
+        \addplot[thick, domain=-3:0] {x - 1};
+        \addplot[thick, domain=0:2] {x^2};
+        \addplot[only marks, mark=*, mark options={fill=white}] coordinates {(0,-1)};
+        \addplot[only marks, mark=*] coordinates {(0,0)};}}{\grafo[xmin=-3, xmax=2.5, ymin=-4.5, ymax=4.5, xtick={-2,2}, ytick={-4,-2,2,4}]{
+        \addplot[thick, domain=-3:0] {x + 1};
+        \addplot[thick, domain=0:2] {-x^2};
+        \addplot[only marks, mark=*, mark options={fill=white}] coordinates {(0,1)};
+        \addplot[only marks, mark=*] coordinates {(0,0)};}}
+
+    \item Resolve $\sqrt{x + 3} = x - 3$.
+    \op{a}{$\{6\}$}{$\{1,\, 6\}$}{$\{1\}$}{$\varnothing$}
+
+    \item[] Considera $f(x) = \dfrac{2x + 1}{x - 3}$.
+
+    \item Quais são as assíntotas do gráfico de $f$?
+    \op[2]{c}{$x = 2$ e $y = 3$}{$x = -3$ e $y = 2$}{$x = 3$ e $y = 2$}{$x = 3$ e $y = \dfrac{1}{3}$}
+
+    \item Qual dos gráficos pode representar $f$?
+    \op[3]{d}{\grafo[xmin=-8, xmax=9, ymin=-8, ymax=11, xtick={-3}, ytick={2}]{
+        \addplot[thick, domain=-8:-3.6] {2 - 5/(x + 3)};
+        \addplot[thick, domain=-2.4:9] {2 - 5/(x + 3)};
+        \draw[dashed] (axis cs:-3,-8) -- (axis cs:-3,11);
+        \draw[dashed] (axis cs:-8,2) -- (axis cs:9,2);}}{\grafo[xmin=-8, xmax=9, ymin=-8, ymax=11, xtick={3}, ytick={2}]{
+        \addplot[thick, domain=-8:2.3] {2 - 7/(x - 3)};
+        \addplot[thick, domain=3.7:9] {2 - 7/(x - 3)};
+        \draw[dashed] (axis cs:3,-8) -- (axis cs:3,11);
+        \draw[dashed] (axis cs:-8,2) -- (axis cs:9,2);}}{\grafo[xmin=-8, xmax=9, ymin=-8, ymax=11, xtick={2}, ytick={3}]{
+        \addplot[thick, domain=-8:1.35] {3 + 7/(x - 2)};
+        \addplot[thick, domain=2.9:9] {3 + 7/(x - 2)};
+        \draw[dashed] (axis cs:2,-8) -- (axis cs:2,11);
+        \draw[dashed] (axis cs:-8,3) -- (axis cs:9,3);}}{\grafo[xmin=-8, xmax=9, ymin=-8, ymax=11, xtick={3}, ytick={2}]{
+        \addplot[thick, domain=-8:2.3] {2 + 7/(x - 3)};
+        \addplot[thick, domain=3.8:9] {2 + 7/(x - 3)};
+        \draw[dashed] (axis cs:3,-8) -- (axis cs:3,11);
+        \draw[dashed] (axis cs:-8,2) -- (axis cs:9,2);}}
+
+    \item Resolve $f(x) \leq 1$.
+    \op[2]{a}{$[-4,\, 3[$}{$[-4,\, 3]$}{$]-\infty,\, -4] \cup ]3,\, +\infty[$}{$]-\infty,\, -4]$}
+\end{questoes}
+
+\subsection*{9. Geometria Analítica e Trigonometria}
+
+\textbf{Os valores aproximados estão arredondados às centésimas.}
+
+\begin{questoes}[resume]
+    \item[] Considera os pontos $A(1,\,2)$ e $B(5,\,-2)$.
+    \fig{\begin{tikzpicture}[scale=0.45]
+        \draw[gray!25] (-1,-3) grid (6,3);
+        \draw[->] (-1.4,0) -- (6.6,0) node[right] {\scriptsize $x$};
+        \draw[->] (0,-3.4) -- (0,3.6) node[above] {\scriptsize $y$};
+        \foreach \xx in {1,...,5} \node[below, font=\tiny] at (\xx,0) {$\xx$};
+        \foreach \yy in {-2,-1,1,2} \node[left, font=\tiny] at (0,\yy) {$\yy$};
+        \fill (1,2) circle (4pt) node[above] {$A$};
+        \fill (5,-2) circle (4pt) node[right] {$B$};
+        \draw (1,2) -- (5,-2);
+    \end{tikzpicture}}
+
+    \item Determina $\overline{AB}$
+    e o ponto médio de $[AB]$.
+    \op[2]{d}{$32$ e $(3,\,0)$}{$4\sqrt{2}$ e $(2,\,-2)$}{$4$ e $(3,\,0)$}{$4\sqrt{2}$ e $(3,\,0)$}
+
+    \item Qual é a equação da circunferência de diâmetro $[AB]$?
+    \op[2]{c}{$(x + 3)^2 + y^2 = 8$}{$(x - 3)^2 + y^2 = 32$}{$(x - 3)^2 + y^2 = 8$}{$(x - 3)^2 + y^2 = 2\sqrt{2}$}
+
+    \item \textbf{(AE2018)} Indica o comprimento dos eixos
+    e os focos da elipse
+    $\dfrac{x^2}{25} + \dfrac{y^2}{9} = 1$.
+    \fig{\begin{tikzpicture}[scale=0.32]
+        \draw[->] (-6.5,0) -- (6.8,0) node[right] {\scriptsize $x$};
+        \draw[->] (0,-4) -- (0,4.4) node[above] {\scriptsize $y$};
+        \draw[thick] (0,0) ellipse (5 and 3);
+    \end{tikzpicture}}
+    \op[2]{d}{$5$ e $3$; \ $(\pm 4,\, 0)$}{$10$ e $6$; \ $(0,\, \pm 4)$}{$10$ e $6$; \ $\left(\pm\sqrt{34},\, 0\right)$}{$10$ e $6$; \ $(\pm 4,\, 0)$}
+
+    \item Qual é uma equação vetorial da reta
+    que passa em $(-1,\,3)$ e $(2,\,9)$?
+    \op[1]{b}{$(x,\,y) = (-1,\,3) + k(2,\,1),\ k \in \mathbb{R}$}{$(x,\,y) = (-1,\,3) + k(1,\,2),\ k \in \mathbb{R}$}{$(x,\,y) = (1,\,2) + k(-1,\,3),\ k \in \mathbb{R}$}{$(x,\,y) = (3,\,6) + k(-1,\,3),\ k \in \mathbb{R}$}
+
+    \item Determina a área do triângulo $[OPQ]$.
+    \fig{\begin{tikzpicture}[scale=0.42]
+        \draw[gray!25] (-1,-1) grid (7,6);
+        \draw[->] (-1.4,0) -- (7.6,0) node[right] {\scriptsize $x$};
+        \draw[->] (0,-1.4) -- (0,6.6) node[above] {\scriptsize $y$};
+        \foreach \xx in {1,...,6} \node[below, font=\tiny] at (\xx,0) {$\xx$};
+        \foreach \yy in {1,...,5} \node[left, font=\tiny] at (0,\yy) {$\yy$};
+        \draw[thick, fill=gray!20] (0,0) -- (6,0) -- (2,5) -- cycle;
+        \node[below left] at (0,0) {$O$};
+        \node[below right] at (6,0) {$P$};
+        \node[above] at (2,5) {$Q$};
+    \end{tikzpicture}}
+    \op{a}{$15$}{$30$}{$12$}{$17$}
+
+    \item Sendo $\vec{u}(1,\,-2,\,2)$ e $\vec{v}(3,\,0,\,4)$,
+    determina $\|\vec{u}\|$, $\|\vec{v}\|$ e $\vec{u} + 2\vec{v}$.
+    \op[2]{c}{$9$; \ $25$; \ $(7,\,-2,\,10)$}{$3$; \ $5$; \ $(4,\,-2,\,6)$}{$3$; \ $5$; \ $(7,\,-2,\,10)$}{$3$; \ $5$; \ $(8,\,-4,\,12)$}
+
+    \item Qual é a equação da superfície esférica
+    de centro $(1,\,-1,\,2)$ e raio $3$?
+    \op[2]{a}{$(x - 1)^2 + (y + 1)^2 + (z - 2)^2 = 9$}{$(x - 1)^2 + (y + 1)^2 + (z - 2)^2 = 3$}{$(x + 1)^2 + (y - 1)^2 + (z + 2)^2 = 9$}{$(x - 1)^2 + (y + 1)^2 + (z - 2)^2 \leq 9$}
+
+    \item Determina $\overline{AC}$.
+    \fig{\begin{tikzpicture}[scale=0.9]
+        \coordinate (A) at (0,0);
+        \coordinate (B) at (3.525,0);
+        \coordinate (C) at (2.878,2.415);
+        \draw[thick] (A) -- (B) -- (C) -- cycle;
+        \node[below left] at (A) {$A$};
+        \node[below right] at (B) {$B$};
+        \node[above] at (C) {$C$};
+        \draw (0.55,0) arc (0:40:0.55);
+        \node[font=\scriptsize] at (20:0.95) {$40^\circ$};
+        \draw ($(B) + (-0.45,0)$) arc (180:105:0.45);
+        \node[font=\scriptsize] at ($(B) + (142:0.8)$) {$75^\circ$};
+        \node[right, font=\small] at ($(B)!0.5!(C)$) {$10$};
+        \node[above left] at ($(A)!0.5!(C)$) {$?$};
+    \end{tikzpicture}}
+    \op{b}{$6{,}65$}{$15{,}03$}{$14{,}10$}{$10{,}66$}
+
+    \item Determina a amplitude do maior ângulo do triângulo.
+    \fig{\begin{tikzpicture}[scale=0.9]
+        \coordinate (P) at (0,0);
+        \coordinate (Q) at (2,0);
+        \coordinate (R) at (-0.875,1.516);
+        \draw[thick] (P) -- (Q) -- (R) -- cycle;
+        \node[below, font=\small] at ($(P)!0.5!(Q)$) {$8$};
+        \node[left, font=\small] at ($(P)!0.5!(R)$) {$7$};
+        \node[above right, font=\small] at ($(Q)!0.5!(R)$) {$13$};
+        \draw (0.3,0) arc (0:120:0.3);
+        \node at (60:0.55) {\scriptsize $?$};
+    \end{tikzpicture}}
+    \op{c}{$60^\circ$}{$90^\circ$}{$120^\circ$}{$150^\circ$}
+
+    \item Converte $150^\circ$ em radianos
+    e $\dfrac{7\pi}{4}$ rad em graus.
+    \op[2]{d}{$\dfrac{3\pi}{4}$ rad e $315^\circ$}{$\dfrac{5\pi}{6}$ rad e $225^\circ$}{$\dfrac{5\pi}{3}$ rad e $315^\circ$}{$\dfrac{5\pi}{6}$ rad e $315^\circ$}
+
+    \item Calcula
+    $\sin\!\left(\dfrac{2\pi}{3}\right)$,
+    $\cos\!\left(\dfrac{5\pi}{4}\right)$ e
+    $\tan\!\left(-\dfrac{\pi}{3}\right)$.
+    \fig{\begin{tikzpicture}
+        \draw[->] (-1.6,0) -- (1.7,0) node[right] {\scriptsize $x$};
+        \draw[->] (0,-1.6) -- (0,1.7) node[above] {\scriptsize $y$};
+        \draw[thick] (0,0) circle (1.2);
+        \draw[dashed] (0,0) -- (120:1.2) (0,0) -- (225:1.2) (0,0) -- (-60:1.2);
+        \fill (120:1.2) circle (1.5pt) node[above left] {\scriptsize $\frac{2\pi}{3}$};
+        \fill (225:1.2) circle (1.5pt) node[below left] {\scriptsize $\frac{5\pi}{4}$};
+        \fill (-60:1.2) circle (1.5pt) node[below right] {\scriptsize $-\frac{\pi}{3}$};
+    \end{tikzpicture}}
+    \op[2]{a}{$\dfrac{\sqrt{3}}{2}$; \ $-\dfrac{\sqrt{2}}{2}$; \ $-\sqrt{3}$}{$\dfrac{1}{2}$; \ $-\dfrac{\sqrt{2}}{2}$; \ $-\sqrt{3}$}{$\dfrac{\sqrt{3}}{2}$; \ $\dfrac{\sqrt{2}}{2}$; \ $\sqrt{3}$}{$-\dfrac{\sqrt{3}}{2}$; \ $-\dfrac{\sqrt{2}}{2}$; \ $-\dfrac{\sqrt{3}}{3}$}
+
+    \item Sabe-se que $\sin \alpha = \dfrac{3}{5}$
+    e $\alpha \in \left]\dfrac{\pi}{2},\, \pi\right[$.
+    Determina $\cos \alpha$ e $\tan \alpha$.
+    \op[2]{b}{$\dfrac{4}{5}$ e $\dfrac{3}{4}$}{$-\dfrac{4}{5}$ e $-\dfrac{3}{4}$}{$-\dfrac{4}{5}$ e $-\dfrac{4}{3}$}{$-\dfrac{3}{5}$ e $\dfrac{3}{4}$}
+
+    \item Indica o período positivo mínimo
+    e o contradomínio de $f(x) = 3\sin(2x) + 1$.
+    \op[2]{c}{$2\pi$; \ $[-2,\, 4]$}{$\dfrac{\pi}{2}$; \ $[-2,\, 4]$}{$\pi$; \ $[-2,\, 4]$}{$\pi$; \ $[-3,\, 3]$}
+
+    \item Resolve, em $\mathbb{R}$, $\sin x = \dfrac{1}{2}$.
+    \fig{\begin{tikzpicture}
+        \draw[->] (-1.6,0) -- (1.7,0) node[right] {\scriptsize $x$};
+        \draw[->] (0,-1.6) -- (0,1.7) node[above] {\scriptsize $y$};
+        \draw[thick] (0,0) circle (1.2);
+        \draw[dashed] (-1.6,0.6) -- (1.6,0.6) node[right] {\scriptsize $y = \frac{1}{2}$};
+        \fill (30:1.2) circle (1.5pt) (150:1.2) circle (1.5pt);
+    \end{tikzpicture}}
+    \op[1]{d}{$x = \dfrac{\pi}{6} + k\pi,\ k \in \mathbb{Z}$}{$x = \pm\dfrac{\pi}{6} + 2k\pi,\ k \in \mathbb{Z}$}{$x = \dfrac{\pi}{3} + 2k\pi \ \vee\ x = \dfrac{2\pi}{3} + 2k\pi,\ k \in \mathbb{Z}$}{$x = \dfrac{\pi}{6} + 2k\pi \ \vee\ x = \dfrac{5\pi}{6} + 2k\pi,\ k \in \mathbb{Z}$}
+
+    \item Calcula o valor exato de $\cos 75^\circ$.
+    \op{c}{$\dfrac{\sqrt{6} + \sqrt{2}}{4}$}{$\dfrac{\sqrt{2} - \sqrt{6}}{4}$}{$\dfrac{\sqrt{6} - \sqrt{2}}{4}$}{$\dfrac{\sqrt{3} - 1}{2}$}
+
+    \item Determina $a$ de modo que
+    $\vec{u}(2,\,-1,\,3)$ e $\vec{v}(1,\,4,\,a)$
+    sejam perpendiculares.
+    \op{d}{$-\dfrac{2}{3}$}{$2$}{$\dfrac{3}{2}$}{$\dfrac{2}{3}$}
+
+    \item Qual é uma equação do plano
+    que passa em $A(1,\,2,\,-1)$
+    e é perpendicular a $\vec{n}(2,\,-1,\,3)$?
+    \op[2]{c}{$x + 2y - z - 6 = 0$}{$2x - y + 3z - 3 = 0$}{$2x - y + 3z + 3 = 0$}{$2x - y + 3z = 0$}
+
+    \item \textbf{(AE2023)} Determina o circuncentro
+    e o raio da circunferência circunscrita
+    ao triângulo $[ABC]$.
+    \fig{\begin{tikzpicture}[scale=0.4]
+        \draw[gray!25] (-1,-1) grid (7,9);
+        \draw[->] (-1.4,0) -- (7.6,0) node[right] {\scriptsize $x$};
+        \draw[->] (0,-1.4) -- (0,9.6) node[above] {\scriptsize $y$};
+        \foreach \xx in {2,4,6} \node[below, font=\tiny] at (\xx,0) {$\xx$};
+        \foreach \yy in {2,4,6,8} \node[left, font=\tiny] at (0,\yy) {$\yy$};
+        \draw[thick] (0,0) -- (6,0) -- (0,8) -- cycle;
+        \node[below left] at (0,0) {$A$};
+        \node[below right] at (6,0) {$B$};
+        \node[above right] at (0,8) {$C$};
+    \end{tikzpicture}}
+    \op[2]{a}{$(3,\,4)$; \ raio $5$}{$\left(2,\,\dfrac{8}{3}\right)$; \ raio $5$}{$(3,\,4)$; \ raio $10$}{$(0,\,0)$; \ raio $5$}
+\end{questoes}
+
+\subsection*{10. Sucessões, Limites e Derivadas}
+
+\begin{questoes}[resume]
+    \item Na demonstração por indução de
+    $1 + 3 + \cdots + (2n - 1) = n^2$, $\forall n \in \mathbb{N}$,
+    o passo de indução consiste em provar que:
+    \op[1]{b}{$1 = 1^2$}{$1 + 3 + \cdots + (2n - 1) = n^2 \ \Rightarrow\ 1 + 3 + \cdots + (2n + 1) = (n + 1)^2$}{a igualdade é verdadeira para $n = 1$, $2$ e $3$}{$1 + 3 + \cdots + (2n + 1) = (n + 1)^2 \ \Rightarrow\ 1 + 3 + \cdots + (2n - 1) = n^2$}
+
+    \item Numa progressão aritmética, $a_1 = 5$ e $r = 3$.
+    Determina $a_{20}$ e $S_{20}$.
+    \op[2]{d}{$a_{20} = 65$; \ $S_{20} = 700$}{$a_{20} = 62$; \ $S_{20} = 1\,340$}{$a_{20} = 60$; \ $S_{20} = 650$}{$a_{20} = 62$; \ $S_{20} = 670$}
+
+    \item Numa progressão geométrica, $v_1 = 2$ e $r = 3$.
+    Determina $v_6$ e $S_6$.
+    \op[2]{a}{$v_6 = 486$; \ $S_6 = 728$}{$v_6 = 1\,458$; \ $S_6 = 2\,186$}{$v_6 = 486$; \ $S_6 = 1\,458$}{$v_6 = 486$; \ $S_6 = 364$}
+
+    \item $\lim \dfrac{3n^2 - n}{2n^2 + 5} =$
+    \op{b}{$0$}{$\dfrac{3}{2}$}{$+\infty$}{$-\dfrac{1}{5}$}
+
+    \item $\lim \left(\sqrt{n^2 + n} - n\right) =$
+    \op{d}{$0$}{$1$}{$+\infty$}{$\dfrac{1}{2}$}
+
+    \item $\lim \left(1 + \dfrac{2}{n}\right)^{n} =$
+    \op{c}{$1$}{$e$}{$e^2$}{$+\infty$}
+
+    \item $\displaystyle\lim_{x \to 2} \dfrac{x^2 - 4}{x - 2} =$
+    \op{b}{$0$}{$4$}{$2$}{Não existe}
+
+    \item Determina $k$ de modo que
+    $f(x) = \begin{cases} x^2 + k & \text{se } x \leq 1 \\ 3x + 1 & \text{se } x > 1 \end{cases}$
+    seja contínua em $x = 1$.
+    \op{a}{$k = 3$}{$k = 4$}{$k = 2$}{$k = -3$}
+
+    \item Determina, por esta ordem, a derivada de
+    $3x^4 - 2x + 7$, \ $(x^2 + 1)(x - 3)$ \ e \
+    $\dfrac{2x + 1}{x - 1}$.
+    \op[1]{b}{$12x^3 - 2$; \ $3x^2 - 6x + 1$; \ $\dfrac{3}{(x - 1)^2}$}{$12x^3 - 2$; \ $3x^2 - 6x + 1$; \ $-\dfrac{3}{(x - 1)^2}$}{$12x^3$; \ $2x(x - 3)$; \ $-\dfrac{3}{(x - 1)^2}$}{$12x^3 - 2$; \ $2x$; \ $2$}
+
+    \item Qual é a equação da reta tangente ao gráfico de
+    $f(x) = x^3 - 2x$ no ponto de abcissa $1$?
+    \fig{\begin{tikzpicture}
+        \begin{axis}[eixos, width=5.2cm, height=5.2cm,
+            xmin=-2.2, xmax=3, ymin=-3.5, ymax=3.5,
+            xtick={-1,1,2}, ytick={-2,-1,1,2}]
+            \addplot[thick, domain=-1.9:1.9] {x^3 - 2*x};
+            \addplot[dashed, domain=-0.5:2.8] {x - 2};
+            \addplot[only marks, mark=*] coordinates {(1,-1)};
+        \end{axis}
+    \end{tikzpicture}}
+    \op{d}{$y = x - 1$}{$y = -x$}{$y = 3x - 4$}{$y = x - 2$}
+
+    \item Estuda a monotonia e os extremos relativos de
+    $f(x) = x^3 - 3x^2 - 9x + 1$.
+    \op[1]{c}{Decrescente em $]-\infty,\, -1]$ e em $[3,\, +\infty[$, crescente em $[-1,\, 3]$; mínimo $6$ e máximo $-26$}{Crescente em $]-\infty,\, -3]$ e em $[1,\, +\infty[$, decrescente em $[-3,\, 1]$; máximo $-26$ e mínimo $-10$}{Crescente em $]-\infty,\, -1]$ e em $[3,\, +\infty[$, decrescente em $[-1,\, 3]$; máximo $6$ e mínimo $-26$}{Crescente em $]-\infty,\, -1]$ e em $[3,\, +\infty[$, decrescente em $[-1,\, 3]$; máximo $-26$ e mínimo $6$}
+\end{questoes}
+
+\subsection*{11. Exponenciais e Logaritmos}
+
+\begin{questoes}[resume]
+    \item Qual das opções representa os gráficos de
+    $f(x) = 2^x$ e $g(x) = \left(\dfrac{1}{2}\right)^x$?
+    \op[3]{d}{\grafo[xmin=-3, xmax=3, ymin=-6, ymax=6.5, xtick={-2,-1,1,2}, ytick={1}]{
+        \addplot[thick, domain=-3:2.5] {(1/2)^x} node[pos=0, right, font=\scriptsize] {$f$};
+        \addplot[thick, dashed, domain=-2.5:3] {2^x} node[pos=1, left, font=\scriptsize] {$g$};}}{\grafo[xmin=-3, xmax=3, ymin=-6, ymax=6.5, xtick={-2,-1,1,2}, ytick={1}]{
+        \addplot[thick, domain=-3:2.5] {2^x} node[pos=1, right, font=\scriptsize] {$f$};
+        \addplot[thick, dashed, domain=-3:2.5] {-(2^x)} node[pos=1, right, font=\scriptsize] {$g$};}}{\grafo[xmin=-3, xmax=3, ymin=-6, ymax=6.5, xtick={-2,-1,1,2}, ytick={2}]{
+        \addplot[thick, domain=-3:2.3] {2^x + 1} node[pos=1, right, font=\scriptsize] {$f$};
+        \addplot[thick, dashed, domain=-2.3:3] {(1/2)^x + 1} node[pos=0, left, font=\scriptsize] {$g$};
+        \draw[dotted] (axis cs:-3,1) -- (axis cs:3,1);}}{\grafo[xmin=-3, xmax=3, ymin=-6, ymax=6.5, xtick={-2,-1,1,2}, ytick={1}]{
+        \addplot[thick, domain=-3:2.5] {2^x} node[pos=1, right, font=\scriptsize] {$f$};
+        \addplot[thick, dashed, domain=-2.5:3] {(1/2)^x} node[pos=0, left, font=\scriptsize] {$g$};}}
+
+    \item Resolve $3^{x + 1} = 81$.
+    \op{b}{$x = 4$}{$x = 3$}{$x = 26$}{$x = \dfrac{80}{3}$}
+
+    \item Calcula, por esta ordem, $\log_2 32$, $\log 0{,}001$,
+    $\ln e^3$ e $\log_3 \dfrac{1}{9}$.
+    \op[2]{d}{$16$; \ $-3$; \ $3$; \ $-2$}{$5$; \ $3$; \ $3$; \ $-\dfrac{1}{2}$}{$5$; \ $-3$; \ $e^3$; \ $-2$}{$5$; \ $-3$; \ $3$; \ $-2$}
+
+    \item Simplifica $\log_2 12 - \log_2 3$
+    e $\ln\!\left(e^2 \sqrt{e}\right)$.
+    \op[2]{c}{$\log_2 9$ e $\dfrac{5}{2}$}{$4$ e $1$}{$2$ e $\dfrac{5}{2}$}{$2$ e $e^{5/2}$}
+
+    \item Resolve $e^{2x} - 5e^{x} + 6 = 0$.
+    \op[3]{d}{$\{2,\, 3\}$}{$\{e^2,\, e^3\}$}{$\{-\ln 2,\, -\ln 3\}$}{$\{\ln 2,\, \ln 3\}$}
+
+    \item Resolve $\ln x + \ln(x - 1) = \ln 6$.
+    \op{b}{$\{-2,\, 3\}$}{$\{3\}$}{$\{-2\}$}{$\left\{\dfrac{7}{2}\right\}$}
+
+    \item Resolve $2^x \geq 8$.
+    \op[3]{c}{$]-\infty,\, 3]$}{$]3,\, +\infty[$}{$[3,\, +\infty[$}{$[4,\, +\infty[$}
+\end{questoes}
+
+\subsection*{12. Cálculo Diferencial Avançado}
+
+\begin{questoes}[resume]
+    \item $\displaystyle\lim_{x \to 0} \dfrac{\sin(3x)}{x} =$
+    \op{b}{$1$}{$3$}{$0$}{$\dfrac{1}{3}$}
+
+    \item Quais são as assíntotas do gráfico de
+    $f(x) = \dfrac{x^2 + 1}{x}$?
+    \op[2]{a}{$x = 0$ e $y = x$}{$x = 0$ e $y = 1$}{$y = 0$ e $y = x$}{$x = 0$ e $y = x + 1$}
+
+    \item[] \textbf{(AE2023)} Considera $f(x) = x^3 + x - 1$.
+    \fig{\begin{tikzpicture}
+        \begin{axis}[eixos, width=5cm, height=5cm,
+            xmin=-0.6, xmax=1.6, ymin=-2, ymax=2.2,
+            xtick={0.5,1}, xticklabels={$0{,}5$, $1$}, ytick={-1,1}]
+            \addplot[thick, domain=-0.5:1.3] {x^3 + x - 1};
+        \end{axis}
+    \end{tikzpicture}}
+
+    \item \textbf{(AE2023)} Pelo teorema de Bolzano,
+    $f(x) = 0$ tem solução em $]0,\,1[$ porque:
+    \op[2]{c}{$f(0) > 0$ e $f(1) > 0$}{$f$ é crescente em $[0,\,1]$}{$f$ é contínua em $[0,\,1]$ e $f(0)\,f(1) < 0$}{$f$ é derivável e $f(0) = f(1)$}
+
+    \item \textbf{(AE2023)} Partindo de $[0,\,1]$,
+    que intervalo se obtém após duas iterações
+    do método da bisseção?
+    \op[2]{b}{$[0{,}75\,;\ 1]$}{$[0{,}5\,;\ 0{,}75]$}{$[0{,}25\,;\ 0{,}5]$}{$[0\,;\ 0{,}25]$}
+
+    \item \textbf{(AE2023)} Quais são o máximo e o mínimo de
+    $g(x) = x^2 - 4x$ em $[0,\,5]$?
+    \op[2]{d}{máximo $0$; \ mínimo $-4$}{máximo $5$; \ mínimo $0$}{máximo $4$; \ mínimo $-4$}{máximo $5$; \ mínimo $-4$}
+
+    \item $\left(\cos\!\left(2x^2\right)\right)' =$
+    \op[3]{d}{$-\sin\!\left(2x^2\right)$}{$4x\sin\!\left(2x^2\right)$}{$-4x\sin(4x)$}{$-4x\sin\!\left(2x^2\right)$}
+
+    \item $\left(\dfrac{e^x}{x}\right)' =$
+    \op[3]{b}{$e^x$}{$\dfrac{e^x(x - 1)}{x^2}$}{$\dfrac{e^x(1 - x)}{x^2}$}{$\dfrac{e^x(x + 1)}{x^2}$}
+
+    \item[] Considera $f(x) = x\, e^{-x}$, de domínio $\mathbb{R}$.
+
+    \item Estuda a monotonia e os extremos de $f$.
+    \op[1]{b}{Decrescente em $]-\infty,\, 1]$, crescente em $[1,\, +\infty[$; mínimo $\dfrac{1}{e}$}{Crescente em $]-\infty,\, 1]$, decrescente em $[1,\, +\infty[$; máximo $\dfrac{1}{e}$}{Crescente em $]-\infty,\, 2]$, decrescente em $[2,\, +\infty[$; máximo $\dfrac{2}{e^2}$}{Crescente em $]-\infty,\, -1]$, decrescente em $[-1,\, +\infty[$; máximo $-e$}
+
+    \item Qual é o ponto de inflexão do gráfico de $f$?
+    \op[3]{d}{$\left(1,\, \dfrac{1}{e}\right)$}{$(0,\, 0)$}{Não tem}{$\left(2,\, \dfrac{2}{e^2}\right)$}
+
+    \item Qual dos gráficos representa $f$?
+    \op[3]{a}{\grafo[xmin=-4, xmax=5, ymin=-3.2, ymax=3.2, xtick={1,2}, ytick={-2,2}]{
+        \addplot[thick, domain=-1.05:5] {x*exp(-x)};}}{\grafo[xmin=-4, xmax=5, ymin=-3.2, ymax=3.2, xtick={1,2}, ytick={-2,2}]{
+        \addplot[thick, domain=-4:1.05] {x*exp(x)};}}{\grafo[xmin=-4, xmax=5, ymin=-3.2, ymax=3.2, xtick={1,2}, ytick={-2,2}]{
+        \addplot[thick, domain=-1.05:5] {-x*exp(-x)};}}{\grafo[xmin=-4, xmax=5, ymin=-3.2, ymax=3.2, xtick={1,2}, ytick={-2,2}]{
+        \addplot[thick, domain=-1:5] {x^2*exp(-x)};}}
+\end{questoes}
+
+\subsection*{13. Números Complexos}
+
+\begin{questoes}[resume]
+    \item Sendo $z_1 = 2 + 3i$ e $z_2 = 1 - i$, calcula,
+    por esta ordem, $z_1 + z_2$, $z_1 \cdot z_2$,
+    $\overline{z_1}$ e $\dfrac{z_1}{z_2}$.
+    \op[1]{c}{$3 + 2i$; \ $-1 + i$; \ $2 - 3i$; \ $-\dfrac{1}{2} + \dfrac{5}{2}i$}{$3 + 4i$; \ $5 + i$; \ $-2 + 3i$; \ $\dfrac{5}{2} + \dfrac{1}{2}i$}{$3 + 2i$; \ $5 + i$; \ $2 - 3i$; \ $-\dfrac{1}{2} + \dfrac{5}{2}i$}{$3 + 2i$; \ $5 + i$; \ $2 - 3i$; \ $\dfrac{5}{2} + \dfrac{1}{2}i$}
+
+    \item $i^{2026} =$
+    \op{a}{$-1$}{$1$}{$i$}{$-i$}
+
+    \item Resolve, em $\mathbb{C}$, $z^2 + 2z + 5 = 0$.
+    \op[2]{b}{$z = 1 \pm 2i$}{$z = -1 \pm 2i$}{$z = -1 \pm 4i$}{Não tem soluções}
+
+    \item Escreve $z$ na forma trigonométrica (ou exponencial).
+    \fig{\begin{tikzpicture}[scale=0.9]
+        \draw[->] (-0.5,0) -- (2.2,0) node[right] {\scriptsize Re};
+        \draw[->] (0,-0.5) -- (0,2.3) node[above] {\scriptsize Im};
+        \draw[dashed] (1,0) node[below] {\scriptsize $1$} -- (1,1.732) -- (0,1.732) node[left] {\scriptsize $\sqrt{3}$};
+        \draw[->, thick] (0,0) -- (1,1.732);
+        \fill (1,1.732) circle (1.5pt) node[above right] {$z$};
+    \end{tikzpicture}}
+    \op[3]{d}{$2\,e^{i\pi/6}$}{$4\,e^{i\pi/3}$}{$2\,e^{i2\pi/3}$}{$2\,e^{i\pi/3}$}
+
+    \item $(1 + i)^8 =$
+    \op{c}{$16i$}{$-16$}{$16$}{$8$}
+
+    \item Quais são as raízes cúbicas de $8i$?
+    \op[1]{b}{$2\,e^{i\pi/2}$, \ $2\,e^{i7\pi/6}$, \ $2\,e^{i11\pi/6}$}{$2\,e^{i\pi/6}$, \ $2\,e^{i5\pi/6}$, \ $2\,e^{i3\pi/2}$}{$2\,e^{i\pi/6}$, \ $2\,e^{i\pi/2}$, \ $2\,e^{i5\pi/6}$}{$\dfrac{8}{3}\,e^{i\pi/6}$, \ $\dfrac{8}{3}\,e^{i5\pi/6}$, \ $\dfrac{8}{3}\,e^{i3\pi/2}$}
+
+    \item Qual das figuras representa
+    o conjunto $\{z \in \mathbb{C} : |z - i| \leq 2\}$?
+    \op[3]{c}{\begin{tikzpicture}[opt, scale=0.42]
+        \fill[gray!35] (0,-1) circle (2);
+        \draw[thick] (0,-1) circle (2);
+        \draw[->] (-3.3,0) -- (3.5,0) node[right] {\tiny Re};
+        \draw[->] (0,-3.5) -- (0,3.5) node[above] {\tiny Im};
+        \foreach \yy in {-1,1} \draw (-0.12,\yy) -- (0.12,\yy) node[right] {\tiny $\yy$};
+        \foreach \xx in {-2,2} \draw (\xx,-0.12) -- (\xx,0.12);
+    \end{tikzpicture}}{\begin{tikzpicture}[opt, scale=0.42]
+        \fill[gray!35] (1,0) circle (2);
+        \draw[thick] (1,0) circle (2);
+        \draw[->] (-3.3,0) -- (3.5,0) node[right] {\tiny Re};
+        \draw[->] (0,-3.5) -- (0,3.5) node[above] {\tiny Im};
+        \foreach \yy in {-1,1} \draw (-0.12,\yy) -- (0.12,\yy) node[right] {\tiny $\yy$};
+        \foreach \xx in {-1,1} \draw (\xx,-0.12) -- (\xx,0.12) node[below] {\tiny $\xx$};
+    \end{tikzpicture}}{\begin{tikzpicture}[opt, scale=0.42]
+        \fill[gray!35] (0,1) circle (2);
+        \draw[thick] (0,1) circle (2);
+        \draw[->] (-3.3,0) -- (3.5,0) node[right] {\tiny Re};
+        \draw[->] (0,-3.5) -- (0,3.5) node[above] {\tiny Im};
+        \foreach \yy in {-1,1} \draw (-0.12,\yy) -- (0.12,\yy) node[right] {\tiny $\yy$};
+        \foreach \xx in {-2,2} \draw (\xx,-0.12) -- (\xx,0.12);
+    \end{tikzpicture}}{\begin{tikzpicture}[opt, scale=0.42]
+        \fill[gray!35, even odd rule] (-3.3,-3.3) rectangle (3.3,3.3) (0,1) circle (2);
+        \draw[thick] (0,1) circle (2);
+        \draw[->] (-3.3,0) -- (3.5,0) node[right] {\tiny Re};
+        \draw[->] (0,-3.5) -- (0,3.5) node[above] {\tiny Im};
+        \foreach \yy in {-1,1} \draw (-0.12,\yy) -- (0.12,\yy) node[right] {\tiny $\yy$};
+        \foreach \xx in {-2,2} \draw (\xx,-0.12) -- (\xx,0.12);
+    \end{tikzpicture}}
+\end{questoes}
+
+\subsection*{14. Estatística, Combinatória e Probabilidades}
+
+\begin{questoes}[resume]
+    \item Para os dados $4,\ 6,\ 7,\ 8,\ 10$,
+    determina a média, a variância amostral
+    (dividindo por $n - 1$) e o desvio padrão.
+    \op[2]{b}{$7$; \ $4$; \ $2$}{$7$; \ $5$; \ $\sqrt{5}$}{$7$; \ $5$; \ $25$}{$7$; \ $20$; \ $\sqrt{20}$}
+
+    \item[] Considera os pares $(x,\,y)$:
+    $(1,\,2)$, $(2,\,4)$, $(3,\,5)$, $(4,\,4)$, $(5,\,6)$.
+
+    \item Qual é a nuvem de pontos destes dados?
+    \op[3]{b}{\grafo[xmin=0, xmax=6.5, ymin=0, ymax=6.8, xtick={1,...,6}, ytick={1,...,6}, grid=major, grid style={gray!20}]{
+        \addplot[only marks, mark=*] coordinates {(2,1) (4,2) (5,3) (4,4) (6,5)};}}{\grafo[xmin=0, xmax=6.5, ymin=0, ymax=6.8, xtick={1,...,6}, ytick={1,...,6}, grid=major, grid style={gray!20}]{
+        \addplot[only marks, mark=*] coordinates {(1,2) (2,4) (3,5) (4,4) (5,6)};}}{\grafo[xmin=0, xmax=6.5, ymin=0, ymax=6.8, xtick={1,...,6}, ytick={1,...,6}, grid=major, grid style={gray!20}]{
+        \addplot[only marks, mark=*] coordinates {(1,6) (2,4) (3,5) (4,4) (5,2)};}}{\grafo[xmin=0, xmax=6.5, ymin=0, ymax=6.8, xtick={1,...,6}, ytick={1,...,6}, grid=major, grid style={gray!20}]{
+        \addplot[only marks, mark=*] coordinates {(1,2) (2,4) (3,5) (4,6) (5,4)};}}
+
+    \item Qual é a equação da reta de regressão linear?
+    \op[2]{d}{$y = x + 1{,}2$}{$y = 0{,}8x + 4{,}2$}{$y = 1{,}8x + 0{,}8$}{$y = 0{,}8x + 1{,}8$}
+
+    \item Calcula ${}^{10}C_3$ e ${}^{10}A_3$.
+    \op[2]{c}{$720$ e $120$}{$30$ e $1\,000$}{$120$ e $720$}{$1\,000$ e $720$}
+
+    \item Desenvolve $(x + 2)^4$.
+    \op[1]{b}{$x^4 + 16$}{$x^4 + 8x^3 + 24x^2 + 32x + 16$}{$x^4 + 4x^3 + 6x^2 + 4x + 16$}{$x^4 + 8x^3 + 12x^2 + 8x + 16$}
+
+    \item Qual é o termo independente de $x$
+    no desenvolvimento de
+    $\left(x + \dfrac{1}{x}\right)^6$?
+    \op{c}{$1$}{$6$}{$20$}{$15$}
+
+    \item Sabe-se que $P(A) = 0{,}5$, $P(B) = 0{,}4$
+    e $P(A \cap B) = 0{,}2$.
+    Determina $P(A \cup B)$ e $P(A \mid B)$
+    e verifica se $A$ e $B$ são independentes.
+    \op[2]{a}{$0{,}7$; \ $0{,}5$; \ independentes}{$0{,}9$; \ $0{,}5$; \ independentes}{$0{,}7$; \ $0{,}4$; \ não independentes}{$0{,}7$; \ $0{,}5$; \ não independentes}
+
+    \item \textbf{(AE2018)} Seja $X \sim B\!\left(5,\, \dfrac{1}{6}\right)$.
+    Determina $P(X = 2)$, arredondado às milésimas.
+    \op{d}{$0{,}028$}{$0{,}016$}{$0{,}278$}{$0{,}161$}
+
+    \item \textbf{(AE2023)} Seja $X \sim N(170,\, 8)$.
+    Qual é, aproximadamente, $P(162 < X < 178)$?
+    \fig{\begin{tikzpicture}
+        \begin{axis}[width=7cm, height=3.6cm,
+            axis x line=bottom, axis y line=none,
+            xmin=144, xmax=196, ymin=0, ymax=1.15,
+            xtick={146,154,162,170,178,186,194},
+            tick label style={font=\scriptsize}, samples=120]
+            \addplot[fill=gray!30, draw=none, domain=162:178] {exp(-(x-170)^2/128)} \closedcycle;
+            \addplot[thick, domain=144:196] {exp(-(x-170)^2/128)};
+        \end{axis}
+    \end{tikzpicture}}
+    \op{b}{$0{,}954$}{$0{,}683$}{$0{,}500$}{$0{,}997$}
+\end{questoes}
+
+% =====================================================
+% Folha de respostas
+% =====================================================
+
+\newpage
+
+\begin{center}
+    {\Large \textbf{Folha de Respostas}}
+\end{center}
+
+\vspace{0.3cm}
+
+Nome: \hrulefill \quad Data: \underline{\hspace{3.5cm}}
+
+\vspace{0.2cm}
+
+Programa: \quad \bolha{} \ Ensino Básico \qquad \bolha{} \ AE2018 \qquad \bolha{} \ AE2023
+
+\vspace{0.2cm}
+
+Pinta completamente \textbf{um só} círculo por questão, assim: \ \bolha{a} \bolhacheia \bolha{c} \bolha{d} \bolha{e}.
+A opção \textbf{e} é ``Não sei''.
+Parte I: questões $1$ a $\ref{ultimaI}$. \
+Parte II: questões $\ref{primeiraII}$ a $\totalq$.
+
+\vspace{0.3cm}
+
+\begin{center}
+    \folharespostas
+\end{center}
+
+% -----------------------------------------------------
+% Soluções: compila com
+%   pdflatex -jobname=prova_nivelamento_solucoes "\def\comgabarito{}\input{prova_nivelamento}"
+% -----------------------------------------------------
+\ifgabarito
+    \newpage
+    \section*{Soluções}
+    {\small \gabarito}
+\fi
+
+\end{document}
