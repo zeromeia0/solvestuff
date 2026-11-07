@@ -1,0 +1,75 @@
+\documentclass[12pt]{article}
+\usepackage{ficha}
+
+\begin{document}
+
+\ficha{Derivadas de Funções Transcendentes e Estudo de Funções}[Exponenciais, Logaritmos, Trigonométricas, Concavidades e Inflexão]
+
+\instrucoes{Usa: $(e^u)' = u'e^u$, $\;(a^u)' = u'a^u\ln a$, $\;(\ln u)' = \dfrac{u'}{u}$, $\;(\sin u)' = u'\cos u$, $\;(\cos u)' = -u'\sin u$, $\;(\tan u)' = \dfrac{u'}{\cos^2 u}$.}
+
+\secao{Derivadas de Exponenciais e Logaritmos}{Determina a função derivada.}
+\begin{exercicios}
+  \item $f(x) = e^{3x}$
+  \item $f(x) = 5e^{x^2}$
+  \item $f(x) = x\,e^{x}$
+  \item $f(x) = \dfrac{e^x}{x}$
+  \item $f(x) = 2^x$
+  \item $f(x) = \ln(2x + 1)$
+  \item $f(x) = \ln(x^2 + 1)$
+  \item $f(x) = x\ln x$
+  \item $f(x) = \dfrac{\ln x}{x}$
+  \item $f(x) = \log_{10} x$
+  \item $f(x) = e^{-x}\ln x$
+  \item $f(x) = \ln\left(e^x + 1\right)$
+\end{exercicios}
+
+\secao{Derivadas de Funções Trigonométricas}{Determina a função derivada.}
+\begin{exercicios}
+  \item $f(x) = \sin(2x)$
+  \item $f(x) = 3\cos\left(x - \dfrac{\pi}{4}\right)$
+  \item $f(x) = \tan(3x)$
+  \item $f(x) = \sin^2 x$
+  \item $f(x) = x\cos x$
+  \item $f(x) = e^x \sin x$
+  \item $f(x) = \dfrac{\sin x}{1 + \cos x}$
+  \item $f(x) = \ln(\cos x)$
+\end{exercicios}
+
+\secao{Concavidades e Pontos de Inflexão}{Estuda o sentido das concavidades e determina os pontos de inflexão.}
+\begin{exercicios}
+  \item $f(x) = x^3 - 6x^2 + 5$
+  \item $f(x) = x^4 - 6x^2$
+  \item $f(x) = x\,e^{x}$
+  \item $f(x) = \ln(x^2 + 1)$
+  \item $f(x) = e^{-x^2}$
+  \item $f(x) = x - \sin x$, \; em $[0, 2\pi]$
+  \item $f(x) = \dfrac{1}{x^2 + 3}$
+\end{exercicios}
+
+\secao{Estudo Completo de Funções}{Para cada função, determina o domínio, os zeros, as assíntotas, a monotonia, os extremos, as concavidades e os pontos de inflexão. Esboça o gráfico.}
+\begin{exercicios}
+  \item $f(x) = x^3 - 3x^2$
+  \item $f(x) = x\,e^{-x}$
+  \item $f(x) = \dfrac{\ln x}{x}$
+  \item $f(x) = \dfrac{x^2}{x^2 - 1}$
+  \item $f(x) = x^2 \ln x$
+  \item $f(x) = 2\sin x + \sin(2x)$, \; em $[0, 2\pi]$
+\end{exercicios}
+
+\secao{Problemas e Modelos}{Resolve.}
+\begin{exercicios}
+  \item A população de uma cultura de bactérias é $P(t) = 500\,e^{0{,}2t}$ ($t$ em horas). Calcula $P'(5)$ e interpreta o resultado.
+  \item A temperatura de um café é $T(t) = 20 + 70\,e^{-0{,}1t}$ ($t$ em minutos). Mostra que $T$ é decrescente e calcula a taxa de arrefecimento ao fim de 10 minutos.
+  \item A posição de um objeto preso a uma mola é $x(t) = 4\cos(2t)$. Determina a velocidade e a aceleração e mostra que $x''(t) = -4x(t)$.
+  \item Determina o máximo de $f(x) = x\,e^{-x}$ e interpreta-o graficamente.
+\end{exercicios}
+
+\secao{Desafios}{Resolve os problemas.}
+\begin{exercicios}
+  \item Determina a equação da reta tangente ao gráfico de $f(x) = \ln x$ que passa na origem.
+  \item Mostra que $e^x \ge 1 + x$ para todo $x \in \R$. (Estuda $g(x) = e^x - 1 - x$.)
+  \item Mostra que $\ln x \le x - 1$ para todo $x > 0$.
+  \item Determina $a$ de modo que $f(x) = e^{ax}$ verifique $f''(x) - 5f'(x) + 6f(x) = 0$.
+\end{exercicios}
+
+\end{document}

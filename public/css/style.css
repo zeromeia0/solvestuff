@@ -75,7 +75,7 @@ p { margin: 0 0 0.75rem; }
   align-items: center;
   gap: 1rem;
   padding: 0.75rem max(16px, calc((100vw - 1040px) / 2));
-  padding-top: max(0.75rem, env(safe-area-inset-top));
+  padding-top: max(0.75rem, var(--safe-area-inset-top, env(safe-area-inset-top)));
   background: color-mix(in srgb, var(--surface) 88%, transparent);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
@@ -130,8 +130,8 @@ p { margin: 0 0 0.75rem; }
   .topbar { backdrop-filter: none; background: var(--surface); }
   .nav {
     position: fixed; left: 0; right: 0; bottom: 0;
-    height: calc(var(--nav-h) + env(safe-area-inset-bottom));
-    padding-bottom: env(safe-area-inset-bottom);
+    height: calc(var(--nav-h) + var(--safe-area-inset-bottom, env(safe-area-inset-bottom)));
+    padding-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom));
     margin: 0; gap: 0;
     background: var(--surface); border-top: 1px solid var(--border);
   }
@@ -430,3 +430,18 @@ textarea { resize: vertical; }
   .seq-block > summary::before { content: none; }
   .check-item { break-inside: avoid; padding: 0.2rem 0.5rem; }
 }
+
+/* App update prompt (Android app only) */
+.update-dialog {
+  width: min(420px, calc(100% - 2rem));
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+.update-dialog::backdrop { background: rgb(10 11 25 / 0.55); }
+.update-dialog h2 { margin-top: 0; }
+.update-dialog .update-notes { white-space: pre-line; }
+.update-dialog .row { margin-top: 1rem; }

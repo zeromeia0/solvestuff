@@ -1,0 +1,97 @@
+\documentclass[12pt]{article}
+\usepackage{ficha}
+
+\begin{document}
+
+\ficha{Números Complexos: Plano Complexo e Forma Trigonométrica}[Fórmula de De Moivre, Raízes de Índice $n$ e Regiões do Plano]
+
+\instrucoes{A forma trigonométrica de $z$ é $z = \rho\,e^{i\theta} = \rho(\cos\theta + i\sin\theta)$, com $\rho = |z|$ e $\theta$ um argumento de $z$. Apresenta os argumentos em radianos.}
+
+\secao{Representação no Plano Complexo}{Resolve.}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.6]
+  \draw[very thin, gray!40] (-4,-3) grid (4,4);
+  \draw[-{Latex}] (-4.3,0) -- (4.5,0) node[right] {Re};
+  \draw[-{Latex}] (0,-3.3) -- (0,4.5) node[above] {Im};
+  \fill (3,2) circle (3pt) node[above right] {$A$};
+  \fill (-2,3) circle (3pt) node[above left] {$B$};
+  \fill (-3,-2) circle (3pt) node[below left] {$C$};
+  \fill (0,-3) circle (3pt) node[right] {$D$};
+  \fill (2,0) circle (3pt) node[below] {$E$};
+\end{tikzpicture}
+\end{center}
+
+\begin{exercicios}
+  \item Indica, na forma algébrica, os números complexos representados pelos pontos $A$, $B$, $C$, $D$ e $E$.
+  \item Representa no plano complexo $z_1 = 1 + 2i$, o seu conjugado e o seu simétrico.
+  \item Qual é a relação geométrica entre os afixos de $z$ e de $\overline{z}$? E de $z$ e $-z$?
+  \item Qual é o efeito geométrico de multiplicar $z$ por $i$? Verifica com $z = 3 + 2i$.
+\end{exercicios}
+
+\secao{Da Forma Algébrica para a Forma Trigonométrica}{Escreve na forma trigonométrica.}
+\begin{exercicios}
+  \item $z = 2i$
+  \item $z = -5$
+  \item $z = 1 + i$
+  \item $z = 1 - \sqrt{3}\,i$
+  \item $z = -\sqrt{3} + i$
+  \item $z = -2 - 2i$
+  \item $z = 4\sqrt{3} + 4i$
+  \item $z = -\dfrac{1}{2} - \dfrac{\sqrt{3}}{2}\,i$
+\end{exercicios}
+
+\secao{Da Forma Trigonométrica para a Forma Algébrica}{Escreve na forma algébrica.}
+\begin{exercicios}
+  \item $z = 2e^{i\frac{\pi}{3}}$
+  \item $z = 4e^{i\frac{3\pi}{4}}$
+  \item $z = e^{i\pi}$
+  \item $z = 6e^{-i\frac{\pi}{6}}$
+  \item $z = 3e^{i\frac{3\pi}{2}}$
+  \item $z = \sqrt{2}\,e^{i\frac{5\pi}{4}}$
+\end{exercicios}
+
+\secao{Operações na Forma Trigonométrica}{Considera $z_1 = 2e^{i\frac{\pi}{3}}$ e $z_2 = 4e^{i\frac{\pi}{6}}$. Calcula, apresentando o resultado na forma trigonométrica.}
+\begin{exercicios}
+  \item $z_1 \cdot z_2$
+  \item $\dfrac{z_2}{z_1}$
+  \item $\overline{z_1}$
+  \item $(z_1)^3$
+  \item $(z_2)^6$
+  \item $\dfrac{(z_1)^2}{z_2}$
+  \item Calcula $(1 + i)^{10}$ usando a fórmula de De Moivre.
+  \item Calcula $\left(\sqrt{3} + i\right)^6$.
+  \item Calcula $\left(\dfrac{1 + i}{1 - i}\right)^{2025}$.
+\end{exercicios}
+
+\secao{Raízes de Índice $n$ e Equações}{Resolve em $\C$, apresentando as soluções na forma trigonométrica.}
+\begin{exercicios}
+  \item As raízes quadradas de $-4$.
+  \item As raízes cúbicas de $8$.
+  \item As raízes cúbicas de $i$.
+  \item As raízes quartas de $-16$.
+  \item $z^4 = 1$
+  \item $z^6 = -64$
+  \item $z^3 + 8i = 0$
+  \item Representa no plano complexo as raízes cúbicas de 8. Que figura formam?
+\end{exercicios}
+
+\secao{Regiões do Plano Complexo}{Representa no plano complexo o conjunto de pontos definido por cada condição.}
+\begin{exercicios}
+  \item $|z| = 3$
+  \item $|z - 2i| \le 1$
+  \item $|z - 1| = |z + i|$
+  \item $1 \le |z| \le 2 \;\wedge\; 0 \le \arg z \le \dfrac{\pi}{2}$
+  \item $\text{Re}(z) > 1 \;\wedge\; \text{Im}(z) \le 2$
+  \item $\arg(z - 1 - i) = \dfrac{\pi}{4}$
+\end{exercicios}
+
+\secao{Desafios}{Resolve os problemas.}
+\begin{exercicios}
+  \item Usando a fórmula de De Moivre, deduz as fórmulas de $\cos(2\theta)$ e $\sin(2\theta)$.
+  \item Determina o menor $n \in \N$ tal que $(1 + i)^n$ é um número real negativo.
+  \item Os afixos das raízes de índice $n$ de um número complexo são vértices de um polígono regular. Calcula a área do hexágono formado pelas raízes sextas de $64$.
+  \item Mostra que a soma das raízes cúbicas da unidade é zero.
+\end{exercicios}
+
+\end{document}

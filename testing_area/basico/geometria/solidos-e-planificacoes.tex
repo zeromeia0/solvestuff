@@ -1,0 +1,109 @@
+\documentclass[12pt]{article}
+\usepackage{ficha}
+
+\begin{document}
+
+\ficha{Sólidos Geométricos e Planificações}
+
+\instrucoes{Resolve os exercícios. As figuras são esquemáticas e não estão à escala.}
+
+\secao{Poliedros e Não Poliedros}{Classifica cada sólido como poliedro ou não poliedro e, no caso de poliedro, indica o seu nome.}
+\begin{exercicios}
+  \item Uma lata de refrigerante.
+  \item Um dado.
+  \item Uma bola de futebol.
+  \item Uma caixa de sapatos.
+  \item Um chapéu de aniversário (cone).
+  \item Uma pirâmide do Egito.
+  \item Uma tenda com duas faces triangulares e três retangulares.
+  \item Um lápis afiado de secção hexagonal (considera o corpo do lápis).
+  \item O que distingue um poliedro de um não poliedro?
+  \item O que distingue um prisma de uma pirâmide?
+\end{exercicios}
+
+\secao{Faces, Vértices e Arestas}{Completa a tabela e verifica a relação de Euler $F + V = A + 2$.}
+
+\begin{center}
+\begin{tabular}{|l|c|c|c|c|}\hline
+  Poliedro & Faces ($F$) & Vértices ($V$) & Arestas ($A$) & $F + V - A$ \\\hline
+  Cubo & & & & \\\hline
+  Prisma triangular & & & & \\\hline
+  Prisma pentagonal & & & & \\\hline
+  Pirâmide quadrangular & & & & \\\hline
+  Pirâmide hexagonal & & & & \\\hline
+  Octaedro & & & & \\\hline
+\end{tabular}
+\end{center}
+
+\begin{exercicios}
+  \item Quantas faces, vértices e arestas tem um prisma cuja base tem $n$ lados?
+  \item Quantas faces, vértices e arestas tem uma pirâmide cuja base tem $n$ lados?
+  \item Um prisma tem 18 arestas. Qual é o polígono da base?
+  \item Uma pirâmide tem 12 arestas. Qual é o polígono da base?
+  \item Um poliedro tem 8 faces e 12 vértices. Quantas arestas tem?
+  \item Existe algum prisma com 15 arestas? Justifica.
+\end{exercicios}
+
+\secao{Planificações}{Observa as planificações e identifica o sólido correspondente.}
+
+\begin{center}
+\begin{tikzpicture}[scale=0.55]
+  % (a) cubo
+  \foreach \x in {0,1,2,3} \draw (\x,1) rectangle (\x+1,2);
+  \draw (1,0) rectangle (2,1); \draw (1,2) rectangle (2,3);
+  \node at (2,-0.8) {(a)};
+  % (b) prisma triangular
+  \begin{scope}[xshift=6cm]
+    \foreach \x in {0,1.5,3} \draw (\x,0.5) rectangle (\x+1.5,2.5);
+    \draw (1.5,2.5) -- (3,2.5) -- (2.25,3.8) -- cycle;
+    \draw (1.5,0.5) -- (3,0.5) -- (2.25,-0.8) -- cycle;
+    \node at (2.25,-1.6) {(b)};
+  \end{scope}
+  % (c) pirâmide quadrangular
+  \begin{scope}[xshift=13cm, yshift=1.5cm]
+    \draw (0,0) rectangle (1.5,1.5);
+    \draw (0,1.5) -- (0.75,3) -- (1.5,1.5);
+    \draw (0,0) -- (0.75,-1.5) -- (1.5,0);
+    \draw (0,0) -- (-1.5,0.75) -- (0,1.5);
+    \draw (1.5,0) -- (3,0.75) -- (1.5,1.5);
+    \node at (0.75,-2.3) {(c)};
+  \end{scope}
+  % (d) cilindro
+  \begin{scope}[xshift=19cm]
+    \draw (0,0.5) rectangle (3.2,2.5);
+    \draw (1.6,3.0) circle (0.5);
+    \draw (1.6,0) circle (0.5);
+    \node at (1.6,-0.8) {(d)};
+  \end{scope}
+\end{tikzpicture}
+\end{center}
+
+\begin{exercicios}
+  \item Identifica os sólidos das planificações (a), (b), (c) e (d).
+  \item Na planificação (a), que face fica oposta à face do topo?
+  \item Na planificação (d), qual é a relação entre o comprimento do retângulo e o raio dos círculos?
+  \item Desenha uma planificação de um paralelepípedo com 4\,cm $\times$ 2\,cm $\times$ 1\,cm.
+  \item Desenha uma planificação de um cone.
+  \item Quantas planificações diferentes tem um cubo? (Tenta encontrar pelo menos 5.)
+\end{exercicios}
+
+\secao{Vistas e Secções}{Responde a cada questão.}
+\begin{exercicios}
+  \item Que figura se obtém ao cortar um cilindro por um plano paralelo às bases?
+  \item Que figura se obtém ao cortar um cone por um plano paralelo à base?
+  \item Que figura se obtém ao cortar um cubo por um plano que passa por duas arestas opostas?
+  \item Que figura se obtém ao cortar uma esfera por um plano?
+  \item Desenha a vista de frente, de cima e de lado de uma pirâmide quadrangular.
+  \item Um sólido tem vista de frente e de lado triangulares, e vista de cima circular. Que sólido é?
+\end{exercicios}
+
+\secao{Desafios}{Resolve os problemas.}
+\begin{exercicios}
+  \item Os cinco poliedros regulares (sólidos platónicos) são o tetraedro, o cubo, o octaedro, o dodecaedro e o icosaedro. Indica o tipo de face de cada um.
+  \item Um icosaedro tem 20 faces triangulares. Usando a relação de Euler, determina o número de arestas e de vértices.
+  \item Um cubo de aresta 3\,cm, pintado de vermelho, é cortado em cubinhos de 1\,cm. Quantos cubinhos têm 3 faces pintadas? E 2? E 1? E nenhuma?
+  \item Uma pirâmide e um prisma têm a mesma base com $n$ lados. Juntos têm 25 faces. Determina $n$.
+  \item Explica por que razão não existe nenhum poliedro com exatamente 7 arestas. (Sugestão: cada face tem pelo menos 3 arestas e cada vértice pelo menos 3 arestas, logo $3F \le 2A$ e $3V \le 2A$.)
+\end{exercicios}
+
+\end{document}

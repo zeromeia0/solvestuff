@@ -1,0 +1,84 @@
+\documentclass[12pt]{article}
+\usepackage{ficha}
+
+\begin{document}
+
+\ficha{Círculo Trigonométrico e Funções Trigonométricas}[Radianos, Redução ao 1.º Quadrante e Gráficos]
+
+\instrucoes{Resolve sem calculadora, usando valores exatos, exceto quando indicado.}
+
+\secao{Graus e Radianos}{Converte para radianos (ou para graus, conforme o caso).}
+\begin{exercicios}
+  \item $30^\circ$
+  \item $135^\circ$
+  \item $210^\circ$
+  \item $300^\circ$
+  \item $-45^\circ$
+  \item $\dfrac{\pi}{5}$ rad
+  \item $\dfrac{7\pi}{6}$ rad
+  \item $\dfrac{5\pi}{3}$ rad
+  \item 2 rad (aproximado às unidades)
+  \item Num círculo de raio 4\,cm, qual é o comprimento do arco correspondente a um ângulo de $\dfrac{3\pi}{4}$ rad?
+\end{exercicios}
+
+\secao{O Círculo Trigonométrico}{Resolve.}
+
+\begin{center}
+\begin{tikzpicture}[scale=2]
+  \draw[-{Latex}] (-1.3,0) -- (1.35,0) node[right] {$x$};
+  \draw[-{Latex}] (0,-1.3) -- (0,1.35) node[above] {$y$};
+  \draw[thick] (0,0) circle (1);
+  \draw (0,0) -- (55:1); \fill (55:1) circle (0.8pt) node[above right] {$P$};
+  \draw[dashed] (55:1) -- ({cos(55)},0);
+  \draw (0.25,0) arc (0:55:0.25); \node at (27:0.38) {$\alpha$};
+  \node[below right] at (1,0) {$1$};
+\end{tikzpicture}
+\end{center}
+
+\begin{exercicios}
+  \item Quais são as coordenadas do ponto $P$ em função de $\alpha$?
+  \item Indica o sinal do seno, do cosseno e da tangente em cada quadrante.
+  \item Em que quadrante está o lado extremidade de um ângulo de $\dfrac{5\pi}{4}$? E de $-\dfrac{2\pi}{3}$? E de $\dfrac{11\pi}{6}$?
+  \item Indica o valor de $\sin \dfrac{\pi}{2}$, $\cos \pi$, $\sin \dfrac{3\pi}{2}$ e $\cos 0$.
+  \item Indica a menor determinação positiva de $\dfrac{17\pi}{4}$ e de $-\dfrac{7\pi}{3}$.
+  \item Sabendo que $\cos \alpha = -\dfrac{4}{5}$ e $\alpha \in \left]\dfrac{\pi}{2}, \pi\right[$, determina $\sin \alpha$ e $\tan \alpha$.
+  \item Sabendo que $\tan \alpha = 3$ e $\alpha \in \left]\pi, \dfrac{3\pi}{2}\right[$, determina $\cos \alpha$.
+\end{exercicios}
+
+\secao{Redução ao 1.º Quadrante}{Calcula o valor exato.}
+\begin{exercicios}
+  \item $\sin \dfrac{5\pi}{6}$
+  \item $\cos \dfrac{2\pi}{3}$
+  \item $\tan \dfrac{3\pi}{4}$
+  \item $\sin \dfrac{7\pi}{6}$
+  \item $\cos \dfrac{5\pi}{4}$
+  \item $\sin \left(-\dfrac{\pi}{3}\right)$
+  \item $\cos \dfrac{11\pi}{6}$
+  \item $\tan \dfrac{4\pi}{3}$
+  \item $\sin \dfrac{13\pi}{3}$
+  \item Simplifica $\sin(\pi - x) + \cos(\pi + x) - \sin(-x) + \cos\left(\dfrac{\pi}{2} - x\right)$.
+  \item Simplifica $\sin\left(\dfrac{\pi}{2} + x\right) \cdot \tan(\pi - x)$.
+\end{exercicios}
+
+\secao{Funções Trigonométricas}{Resolve.}
+\begin{exercicios}
+  \item Indica o domínio, o contradomínio e o período de $f(x) = \sin x$ e de $g(x) = \cos x$.
+  \item Indica o domínio e o período de $h(x) = \tan x$.
+  \item Esboça o gráfico de $f(x) = \sin x$ em $[0, 2\pi]$ e indica os zeros, o máximo e o mínimo.
+  \item Indica a amplitude e o período de $f(x) = 3\sin(2x)$.
+  \item Indica o contradomínio e o período de $g(x) = 1 - 2\cos\left(\dfrac{x}{2}\right)$.
+  \item Indica o período de $h(x) = \tan(3x)$.
+  \item As funções seno e cosseno são pares ou ímpares? Justifica.
+  \item Determina os zeros de $f(x) = \cos x$ em $[-2\pi, 2\pi]$.
+\end{exercicios}
+
+\secao{Desafios}{Resolve os problemas.}
+\begin{exercicios}
+  \item A altura, em metros, de uma cadeira de uma roda gigante é $h(t) = 20 - 18\cos\left(\dfrac{\pi t}{10}\right)$, com $t$ em minutos. Indica a altura máxima e mínima e o tempo de uma volta completa.
+  \item A temperatura num dia é $T(t) = 15 + 6\sin\left(\dfrac{\pi (t - 9)}{12}\right)$, com $t$ em horas. Determina a temperatura máxima e a hora a que ocorre.
+  \item Mostra que $\dfrac{1}{\cos^2 x} = 1 + \tan^2 x$.
+  \item Simplifica $\dfrac{\sin^4 x - \cos^4 x}{\sin x - \cos x}$.
+  \item Determina o perímetro de um setor circular de raio 6\,cm e ângulo $\dfrac{\pi}{3}$ rad, e a sua área.
+\end{exercicios}
+
+\end{document}

@@ -1,0 +1,72 @@
+\documentclass[12pt]{article}
+\usepackage{ficha}
+
+\begin{document}
+
+\ficha{Probabilidades e Distribuições}[Axiomática, Probabilidade Condicionada, Independência, Binomial e Normal]
+
+\instrucoes{Apresenta as probabilidades na forma de fração irredutível ou arredondadas às milésimas. $P(A \mid B) = \dfrac{P(A \cap B)}{P(B)}$.}
+
+\secao{Propriedades das Probabilidades}{Resolve.}
+\begin{exercicios}
+  \item Sabendo que $P(A) = 0{,}4$, $P(B) = 0{,}5$ e $P(A \cap B) = 0{,}2$, calcula $P(A \cup B)$.
+  \item Com os dados anteriores, calcula $P(\overline{A})$, $P(A \cap \overline{B})$ e $P(\overline{A} \cap \overline{B})$.
+  \item $A$ e $B$ são incompatíveis, $P(A) = 0{,}3$ e $P(B) = 0{,}45$. Calcula $P(A \cup B)$.
+  \item Sabendo que $P(A \cup B) = 0{,}8$, $P(A) = 0{,}5$ e $P(B) = 0{,}6$, calcula $P(A \cap B)$.
+  \item Mostra que $P(\overline{A}) = 1 - P(A)$ a partir dos axiomas.
+  \item Mostra que $P(A \cup B) \le P(A) + P(B)$.
+\end{exercicios}
+
+\secao{Probabilidades com Combinatória}{Resolve.}
+\begin{exercicios}
+  \item Um saco tem 5 bolas brancas e 3 pretas. Tiram-se 2 bolas ao acaso, simultaneamente. Qual é a probabilidade de serem ambas pretas?
+  \item No mesmo saco, qual é a probabilidade de as 2 bolas serem de cores diferentes?
+  \item Escolhem-se ao acaso 3 alunos de uma turma de 10 rapazes e 8 raparigas. Qual é a probabilidade de serem todos raparigas?
+  \item Cinco pessoas sentam-se ao acaso numa fila. Qual é a probabilidade de duas pessoas determinadas ficarem juntas?
+  \item Num totoloto (6 números de 1 a 49), qual é a probabilidade de acertar nos 6 números?
+  \item Tiram-se 5 cartas de um baralho de 52. Qual é a probabilidade de saírem 4 ases?
+  \item Qual é a probabilidade de, num grupo de 4 pessoas, pelo menos duas fazerem anos no mesmo mês? (Considera os meses equiprováveis.)
+\end{exercicios}
+
+\secao{Probabilidade Condicionada e Independência}{Resolve.}
+\begin{exercicios}
+  \item Lança-se um dado. Sabendo que saiu número par, qual é a probabilidade de ter saído 6?
+  \item Numa turma, 60\,\% dos alunos praticam desporto, 30\,\% tocam um instrumento e 20\,\% fazem as duas coisas. Escolhido um aluno que toca um instrumento, qual é a probabilidade de praticar desporto?
+  \item Os acontecimentos do exercício anterior são independentes? Justifica.
+  \item $A$ e $B$ são independentes, $P(A) = 0{,}3$ e $P(B) = 0{,}6$. Calcula $P(A \cap B)$ e $P(A \cup B)$.
+  \item Uma caixa tem 4 bolas vermelhas e 6 azuis. Tiram-se duas, sem reposição. Qual é a probabilidade de a segunda ser vermelha, sabendo que a primeira foi azul?
+  \item Na mesma caixa, qual é a probabilidade de a segunda bola ser vermelha?
+  \item Um teste a uma doença tem sensibilidade de 95\,\% (dá positivo em 95\,\% dos doentes) e especificidade de 90\,\% (dá negativo em 90\,\% dos saudáveis). A doença afeta 2\,\% da população. Uma pessoa testou positivo. Qual é a probabilidade de estar doente? (Usa uma árvore.)
+  \item Mostra que, se $A$ e $B$ são independentes, então $\overline{A}$ e $\overline{B}$ também são.
+\end{exercicios}
+
+\secao{Distribuição de Probabilidades e Binomial}{Resolve.}
+\begin{exercicios}
+  \item Lançam-se duas moedas. Seja $X$ o número de caras. Constrói a tabela de distribuição de $X$ e calcula o valor médio.
+  \item A variável $X$ toma os valores 1, 2 e 3 com probabilidades $0{,}2$, $a$ e $0{,}5$. Determina $a$ e o valor médio de $X$.
+  \item Um dado é lançado 5 vezes. Seja $X$ o número de vezes que sai 6. Calcula $P(X = 2)$.
+  \item No mesmo contexto, calcula $P(X \ge 1)$.
+  \item Um atirador acerta no alvo com probabilidade 0,7. Em 10 tiros, qual é a probabilidade de acertar exatamente 8 vezes? E pelo menos 8?
+  \item Indica o valor médio e o desvio padrão de uma variável binomial com $n = 20$ e $p = 0{,}3$.
+  \item Num teste de escolha múltipla com 10 perguntas de 4 opções, um aluno responde ao acaso. Qual é a probabilidade de acertar pelo menos 5?
+\end{exercicios}
+
+\secao{Distribuição Normal}{Resolve. Usa os valores aproximados: $P(\mu - \sigma < X < \mu + \sigma) \approx 0{,}6827$, $\;P(\mu - 2\sigma < X < \mu + 2\sigma) \approx 0{,}9545$ e $P(\mu - 3\sigma < X < \mu + 3\sigma) \approx 0{,}9973$.}
+\begin{exercicios}
+  \item As alturas de um grupo de jovens seguem uma distribuição normal com $\mu = 170$\,cm e $\sigma = 8$\,cm. Calcula $P(162 < X < 178)$.
+  \item No mesmo grupo, calcula $P(X > 186)$.
+  \item No mesmo grupo, calcula $P(154 < X < 178)$.
+  \item O peso de pacotes de açúcar segue uma distribuição normal com $\mu = 1\,000$\,g e $\sigma = 10$\,g. Que percentagem de pacotes pesa menos de 980\,g?
+  \item Explica o significado de $\mu$ e $\sigma$ na forma da curva normal.
+  \item Usa a calculadora para determinar $P(X < 175)$ com $X \sim N(170, 8)$.
+\end{exercicios}
+
+\secao{Desafios}{Resolve os problemas.}
+\begin{exercicios}
+  \item Quantas vezes, no mínimo, se deve lançar um dado para que a probabilidade de sair pelo menos um 6 seja superior a 0,9?
+  \item Três caçadores disparam sobre um alvo com probabilidades de acertar 0,5, 0,6 e 0,8 (independentemente). Qual é a probabilidade de o alvo ser atingido?
+  \item Numa urna há $n$ bolas, das quais 3 são pretas. Tirando 2 bolas sem reposição, a probabilidade de ambas serem pretas é $\dfrac{1}{15}$. Determina $n$.
+  \item Problema de Monty Hall: há 3 portas, atrás de uma está um carro. Escolhes uma porta; o apresentador abre outra porta sem carro e pergunta se queres trocar. Deves trocar? Justifica com probabilidades.
+\end{exercicios}
+
+\end{document}

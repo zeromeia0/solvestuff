@@ -1,0 +1,23 @@
+# solvestuff on PHP shared hosting: static app from this folder, /api/* -> api/index.php
+Options -Indexes
+DirectoryIndex index.html
+AddType application/manifest+json .webmanifest
+
+RewriteEngine On
+# Apache (CGI/FastCGI) drops the Authorization header unless it is passed on explicitly.
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+RewriteCond %{REQUEST_URI} !^/api/index\.php
+RewriteRule ^api/ api/index.php [L,QSA]
+
+# index.html must always be re-checked so it picks up the new ?v= asset URLs after a deploy.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|js|css|webmanifest)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>

@@ -1,0 +1,106 @@
+\documentclass[12pt]{article}
+\usepackage{ficha}
+
+\begin{document}
+
+\ficha{Números e Reta Numérica}[Valor Posicional, Comparação e Paridade]
+
+\instrucoes{Resolve os exercícios sem calculadora. Nas retas numéricas, as marcas estão igualmente espaçadas.}
+
+\secao{Leitura e Escrita de Números}{Escreve cada número por extenso ou em algarismos, conforme pedido.}
+\begin{exercicios}
+  \item Escreve por extenso: 348.
+  \item Escreve por extenso: 1\,205.
+  \item Escreve por extenso: 40\,060.
+  \item Escreve por extenso: 702\,019.
+  \item Escreve em algarismos: duzentos e sete.
+  \item Escreve em algarismos: três mil e quarenta e cinco.
+  \item Escreve em algarismos: noventa mil e nove.
+  \item Escreve em algarismos: um milhão, duzentos mil e trinta.
+  \item Qual é o maior número de três algarismos? E o menor?
+  \item Qual é o maior número de quatro algarismos diferentes?
+\end{exercicios}
+
+\secao{Valor Posicional}{Indica o valor posicional do algarismo pedido.}
+\begin{exercicios}
+  \item Em 4\,382, qual é o valor do algarismo 3?
+  \item Em 57\,019, qual é o valor do algarismo 7?
+  \item Em 906\,215, qual é o valor do algarismo 9?
+  \item Em 12\,480, qual é o algarismo das centenas?
+  \item Em 3\,067\,154, qual é o algarismo das dezenas de milhar?
+  \item Decompõe 6\,275 em unidades de milhar, centenas, dezenas e unidades.
+  \item Decompõe 40\,308 na forma $40\,000 + \ldots$
+  \item Que número é formado por 5 milhares, 3 centenas e 8 unidades?
+  \item Que número é formado por 7 dezenas de milhar, 2 milhares e 4 dezenas?
+  \item Quantas dezenas há, ao todo, em 1\,350?
+  \item Quantas centenas há, ao todo, em 24\,700?
+\end{exercicios}
+
+\secao{Comparação e Ordenação}{Compara os números usando $<$, $>$ ou $=$, ou ordena-os como pedido.}
+\begin{exercicios}
+  \item $4\,087 \;\square\; 4\,078$
+  \item $12\,399 \;\square\; 12\,400$
+  \item $70\,010 \;\square\; 7\,001$
+  \item $506\,000 \;\square\; 560\,000$
+  \item $2 \text{ milhares} + 3 \text{ centenas} \;\square\; 2\,030$
+  \item Ordena por ordem crescente: 3\,540; 3\,405; 3\,504; 3\,450.
+  \item Ordena por ordem decrescente: 18\,009; 18\,090; 18\,900; 18\,000.
+  \item Escreve todos os números de três algarismos que se podem formar com 2, 5 e 8, sem repetir algarismos, e ordena-os por ordem crescente.
+  \item Escreve um número entre 6\,999 e 7\,010 que seja par.
+  \item Qual é o número natural imediatamente antes de 10\,000? E o imediatamente a seguir?
+\end{exercicios}
+
+\secao{A Reta Numérica}{Observa as retas numéricas e responde.}
+
+\begin{center}
+\begin{tikzpicture}[x=1.1cm]
+  \draw[-{Latex}] (-0.3,0) -- (10.4,0);
+  \foreach \i in {0,...,10} \draw (\i,0.12) -- (\i,-0.12);
+  \node[below] at (0,-0.12) {$0$};
+  \node[below] at (10,-0.12) {$50$};
+  \node[above] at (3,0.12) {$A$};
+  \node[above] at (7,0.12) {$B$};
+  \node[above] at (9,0.12) {$C$};
+\end{tikzpicture}
+\end{center}
+
+\begin{exercicios}
+  \item Quanto vale cada intervalo entre duas marcas consecutivas?
+  \item Que números correspondem aos pontos $A$, $B$ e $C$?
+  \item Que número está exatamente a meio caminho entre $A$ e $B$?
+  \item Quantas marcas separam o ponto $A$ do ponto $C$? Qual é a diferença entre os dois números?
+  \item Numa reta numérica, a marca 0 está à esquerda e a marca 100 está 10 marcas à direita. Que número corresponde à 4.ª marca?
+  \item Que número está a meio caminho entre 36 e 54?
+  \item Que número está a meio caminho entre 120 e 200?
+  \item O ponto $P$ está a meio caminho entre 250 e um número $x$. Se $P = 300$, quanto vale $x$?
+  \item Desenha uma reta numérica de 0 a 20, com marcas de 2 em 2, e assinala os números 6, 13 e 18.
+  \item Entre 1\,000 e 2\,000 existem 9 marcas igualmente espaçadas. Quanto vale cada intervalo?
+\end{exercicios}
+
+\secao{Números Pares e Ímpares}{Responde e justifica.}
+\begin{exercicios}
+  \item Classifica como par ou ímpar: 38, 105, 2\,416, 7\,773, 10\,000.
+  \item Escreve os números ímpares entre 40 e 52.
+  \item Escreve os cinco primeiros números pares maiores do que 97.
+  \item Quantos números pares existem de 1 a 50?
+  \item A soma de dois números ímpares é par ou ímpar? Dá três exemplos.
+  \item A soma de um número par com um número ímpar é par ou ímpar? Dá três exemplos.
+  \item O produto de dois números ímpares é par ou ímpar? Dá três exemplos.
+  \item O produto de qualquer número por um número par é sempre par? Justifica.
+  \item Qual é o maior número ímpar de quatro algarismos?
+  \item Com os algarismos 1, 4 e 7, escreve todos os números pares de três algarismos diferentes.
+\end{exercicios}
+
+\secao{Desafios}{Resolve os problemas.}
+\begin{exercicios}
+  \item Quantos números de três algarismos existem?
+  \item Quantas vezes se escreve o algarismo 5 ao escrever todos os números de 1 a 100?
+  \item Um número tem quatro algarismos. O algarismo dos milhares é 3, o das unidades é o dobro do dos milhares, e os outros dois são zeros. Que número é?
+  \item Penso num número par entre 20 e 40 cuja soma dos algarismos é 7. Que número é?
+  \item A soma de três números ímpares consecutivos é 63. Quais são esses números?
+  \item Numa reta numérica, o ponto $M$ está a meio caminho entre 18 e $N$. Se $M = 45$, quanto vale $N$?
+  \item Com os algarismos 0, 3, 6 e 9, sem repetir, qual é o maior número par de quatro algarismos? E o menor?
+  \item A soma de dois números pares consecutivos é 46. Quais são esses números?
+\end{exercicios}
+
+\end{document}

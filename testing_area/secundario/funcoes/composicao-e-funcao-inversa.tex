@@ -1,0 +1,77 @@
+\documentclass[12pt]{article}
+\usepackage{ficha}
+
+\begin{document}
+
+\ficha{Generalidades sobre Funções}[Injetividade, Paridade, Composição e Função Inversa]
+
+\instrucoes{Resolve os exercícios, apresentando os cálculos e justificações.}
+
+\secao{Injetividade, Sobrejetividade e Bijetividade}{Classifica cada função como injetiva, sobrejetiva e/ou bijetiva. Justifica.}
+\begin{exercicios}
+  \item $f : \R \to \R$, $f(x) = 2x + 1$
+  \item $g : \R \to \R$, $g(x) = x^2$
+  \item $h : [0, +\infty[\, \to [0, +\infty[$, $h(x) = x^2$
+  \item $i : \R \to \R$, $i(x) = x^3$
+  \item $j : \R \to \R$, $j(x) = |x|$
+  \item $k : \{1, 2, 3\} \to \{a, b, c\}$, com $k(1) = b$, $k(2) = c$, $k(3) = a$
+  \item Explica, usando o gráfico, como se reconhece uma função injetiva.
+\end{exercicios}
+
+\secao{Funções Pares e Ímpares}{Indica se cada função é par, ímpar ou nem par nem ímpar.}
+\begin{exercicios}
+  \item $f(x) = x^4 - 3x^2$
+  \item $f(x) = x^3 + x$
+  \item $f(x) = x^2 + x$
+  \item $f(x) = |x| + 1$
+  \item $f(x) = \dfrac{1}{x}$
+  \item $f(x) = 5$
+  \item O gráfico de uma função par é simétrico em relação a quê? E o de uma função ímpar?
+  \item Sabendo que $f$ é ímpar e $f(3) = 7$, indica $f(-3)$. Se $f$ estiver definida em $0$, quanto vale $f(0)$?
+\end{exercicios}
+
+\secao{Composição de Funções}{Considera $f(x) = 2x - 3$, $g(x) = x^2 + 1$ e $h(x) = \dfrac{1}{x}$.}
+\begin{exercicios}
+  \item Calcula $(f \circ g)(2)$.
+  \item Calcula $(g \circ f)(2)$.
+  \item Calcula $(f \circ f)(1)$.
+  \item Determina a expressão de $f \circ g$.
+  \item Determina a expressão de $g \circ f$.
+  \item Mostra que $f \circ g \neq g \circ f$.
+  \item Determina a expressão e o domínio de $h \circ f$.
+  \item Determina a expressão de $f \circ h$ e o seu domínio.
+  \item Escreve $p(x) = \sqrt{3x + 1}$ como composta de duas funções.
+  \item Escreve $q(x) = (x - 5)^3$ como composta de duas funções.
+\end{exercicios}
+
+\secao{Função Inversa}{Determina a expressão da função inversa e indica o domínio e o contradomínio de $f^{-1}$.}
+\begin{exercicios}
+  \item $f(x) = 3x + 6$
+  \item $f(x) = \dfrac{x - 1}{2}$
+  \item $f(x) = 5 - 4x$
+  \item $f(x) = x^3 + 2$
+  \item $f(x) = \dfrac{2}{x - 1}$, \; com $x \neq 1$
+  \item $f(x) = \sqrt{x - 3}$, \; com $x \ge 3$
+  \item $f(x) = x^2 + 1$, \; com $x \ge 0$
+  \item $f(x) = \dfrac{x + 1}{x - 2}$, \; com $x \neq 2$
+\end{exercicios}
+
+\secao{Propriedades da Função Inversa}{Responde a cada questão.}
+\begin{exercicios}
+  \item Verifica que, para $f(x) = 3x + 6$, se tem $(f \circ f^{-1})(x) = x$ e $(f^{-1} \circ f)(x) = x$.
+  \item Os gráficos de $f$ e $f^{-1}$ são simétricos em relação a que reta?
+  \item Sabendo que $f(2) = 5$, indica $f^{-1}(5)$.
+  \item A função $g(x) = x^2$, de $\R$ em $\R$, tem inversa? Justifica. Que restrição do domínio a torna invertível?
+  \item Se $f(x) = 2x - 1$ e $g(x) = x + 4$, determina $(f \circ g)^{-1}$ e compara com $g^{-1} \circ f^{-1}$.
+\end{exercicios}
+
+\secao{Desafios}{Resolve os problemas.}
+\begin{exercicios}
+  \item Determina $a$ e $b$ de modo que $f(x) = ax + b$ verifique $(f \circ f)(x) = 4x + 9$.
+  \item Sabendo que $(f \circ g)(x) = 6x + 1$ e $g(x) = 2x - 1$, determina $f(x)$.
+  \item Mostra que a função $f(x) = \dfrac{x}{x - 1}$ ($x \neq 1$) é a sua própria inversa.
+  \item Uma loja aplica um desconto de 20\,\% e depois cobra 5 euros de portes. Escreve as duas funções e a composta. Determina a inversa da composta e interpreta-a.
+  \item Prova que a composta de duas funções ímpares é ímpar.
+\end{exercicios}
+
+\end{document}

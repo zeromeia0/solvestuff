@@ -3,7 +3,7 @@ RUN_DIR := .run
 PID     := $(RUN_DIR)/server.pid
 LOG     := $(RUN_DIR)/server.log
 
-.PHONY: up down restart status logs
+.PHONY: up down restart status logs apk
 
 up:
 	@mkdir -p $(RUN_DIR)
@@ -38,3 +38,17 @@ status:
 
 logs:
 	@tail -f $(LOG)
+
+# Android app: builds mobile/dist/solvestuff-<version>-build<n>.apk (see mobile/build.mjs).
+# SERVER=https://... make apk  to point the app at another server.
+apk:
+	@node mobile/build.mjs
+
+# PHP hosting (AeonFree). `make deploy` builds, uploads changed code, and syncs data both ways:
+# local-only data changes go up, changes made on the live admin page come down, and if both
+# sides changed the same file it stops. Resolve with FORCE=local / FORCE=live make deploy.
+.PHONY: site deploy
+site:
+	@hosting/build.sh
+deploy: site
+	@hosting/deploy.sh

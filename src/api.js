@@ -8,6 +8,7 @@ import { loadSequence } from './sequence.js';
 import { HttpError, sendJson, readJson } from './http.js';
 
 const MAX_PDF_BYTES = 50 * 1024 * 1024;
+const MAX_APK_BYTES = 150 * 1024 * 1024;
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000;
 const PROGRAMMES = ['', 'AE2018', 'AE2023'];
 const TOPIC_STATUSES = ['learning', 'known', 'review'];
@@ -79,6 +80,10 @@ export async function createApi({ storageDir, seedFile, sequenceFile, adminPassw
   const curriculum = createJsonStore(path.join(storageDir, 'curriculum.json'), seed);
   const sheets = createJsonStore(path.join(storageDir, 'sheets.json'), { sheets: [] });
   const students = createJsonStore(path.join(storageDir, 'students.json'), { students: [] });
+  // The Android app: only the latest APK is kept, at storage/app/solvestuff.apk.
+  const appDir = path.join(storageDir, 'app');
+  const apkFile = path.join(appDir, 'solvestuff.apk');
+  const appRelease = createJsonStore(path.join(storageDir, 'app.json'), { latest: null });
   const sequence = await loadSequence(sequenceFile);
   const sequenceIds = new Set(sequence.parts.flatMap((p) => p.blocks.flatMap((b) => b.items.map((i) => i.id))));
   const sessions = new Map(); // token -> expiresAt
@@ -193,6 +198,54 @@ export async function createApi({ storageDir, seedFile, sequenceFile, adminPassw
     ['GET', '/api/admin/me', ({ req }) => {
       requireAdmin(req);
       return { ok: true };
+    }],
+
+    // --- Android app ---
+    // The app compares its own build number with latest.versionCode on start and offers the update.
+    ['GET', '/api/app/latest', () => appRelease.get()],
+
+    ['GET', '/api/app/apk', async ({ res }) => {
+      const { latest } = await appRelease.get();
+      const stat = latest && (await fs.stat(apkFile).catch(() => null));
+      if (!stat) throw new HttpError(404, 'apk_missing');
+      res.writeHead(200, {
+        'Content-Type': 'application/vnd.android.package-archive',
+        'Content-Length': stat.size,
+        'Content-Disposition': `attachment; filename="solvestuff-${latest.versionName.replace(/[^\w.-]/g, '') || latest.versionCode}.apk"`,
+        'Cache-Control': 'no-cache',
+      });
+      createReadStream(apkFile).pipe(res);
+    }],
+
+    // multipart: file (the .apk), versionCode, versionName, notes. Publishing makes every
+    // installed app with a lower build number show the update prompt the next time it opens.
+    ['POST', '/api/admin/app', async ({ req }) => {
+      requireAdmin(req);
+      const form = await readForm(req, MAX_APK_BYTES + 1024 * 1024);
+      const file = form.get('file');
+      if (!file || typeof file === 'string' || !file.size) throw new HttpError(400, 'file_required');
+      if (file.size > MAX_APK_BYTES) throw new HttpError(413, 'file_too_large');
+      const buffer = Buffer.from(await file.arrayBuffer());
+      // An APK is a zip file.
+      if (buffer.subarray(0, 4).toString('latin1') !== 'PK\x03\x04') throw new HttpError(400, 'not_an_apk');
+      const versionCode = Number(form.get('versionCode'));
+      if (!Number.isInteger(versionCode) || versionCode < 1) throw new HttpError(400, 'invalid_version');
+      const { latest } = await appRelease.get();
+      if (latest && versionCode <= latest.versionCode) throw new HttpError(409, 'version_not_newer');
+
+      await fs.mkdir(appDir, { recursive: true });
+      await fs.writeFile(`${apkFile}.tmp`, buffer);
+      await fs.rename(`${apkFile}.tmp`, apkFile);
+      return appRelease.update((data) => {
+        data.latest = {
+          versionCode,
+          versionName: text(form.get('versionName'), 40) || String(versionCode),
+          notes: text(form.get('notes'), 600),
+          size: buffer.length,
+          publishedAt: new Date().toISOString(),
+        };
+        return data;
+      });
     }],
 
     // --- sheets ---
@@ -385,16 +438,18 @@ export async function createApi({ storageDir, seedFile, sequenceFile, adminPassw
   return async function handleApi(req, res, url) {
     // Open CORS so a future mobile app (Capacitor/APK) can call this API.
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+    res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type, X-HTTP-Method-Override, X-Authorization');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS');
     if (req.method === 'OPTIONS') {
       res.writeHead(204).end();
       return;
     }
+    const override = String(req.headers['x-http-method-override'] || '').toUpperCase();
+    const method = req.method === 'POST' && ['PATCH', 'DELETE'].includes(override) ? override : req.method;
     try {
       for (const route of routes) {
         const match = route.regex.exec(url.pathname);
-        if (!match || route.method !== req.method) continue;
+        if (!match || route.method !== method) continue;
         const params = Object.fromEntries(route.keys.map((k, i) => [k, decodeURIComponent(match[i + 1])]));
         const result = await route.handler({ req, res, params, url });
         if (!res.headersSent) sendJson(res, 200, result);

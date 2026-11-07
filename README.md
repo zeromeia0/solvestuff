@@ -63,8 +63,41 @@ acrescenta tópicos novos no fim em vez de renumerar a lista.
 
 As rotas `/api/admin/*` precisam de `Authorization: Bearer <token>`.
 
-## Futura app Android (APK)
+## App Android (APK)
 
-O frontend é só HTML/CSS/JS estático e fala com o servidor apenas pela API (com CORS ligado), por isso pode
-ser embrulhado com [Capacitor](https://capacitorjs.com/) sem mudar nada: copia `public/` para o projeto
-Capacitor e define `window.SOLVESTUFF_API_BASE` em `public/js/config.js` com o endereço do servidor publicado.
+A app é o `public/` embrulhado com [Capacitor](https://capacitorjs.com/), em `mobile/`. Fala com o servidor
+pela API, por isso **o servidor tem de estar acessível a partir do telemóvel**.
+
+```bash
+make apk                                  # usa o servidor de mobile/app.json
+SERVER=https://o-meu-servidor.pt make apk # ou outro
+```
+
+Gera `mobile/dist/solvestuff-<versão>-build<n>.apk`. O número da build sobe sozinho a cada `make apk`
+(fica guardado em `mobile/app.json`); a versão vem do `package.json`.
+
+O build usa o JDK 21 e o Android SDK em `~/.local/share/android-toolchain/` (ou `JAVA_HOME`/`ANDROID_HOME`).
+
+**Publicar uma atualização:** área do professor → *App Android* → carrega o APK → *Publicar*. Sempre que a app
+abre (ou volta ao ecrã), pergunta ao servidor (`GET /api/app/latest`) se há uma build mais recente e, se houver,
+mostra o aviso "Há uma nova versão da app". O botão *Atualizar* descarrega o APK (`GET /api/app/apk`) no browser
+do telemóvel, e o aluno instala-o por cima da versão antiga, sem perder o progresso.
+
+**Chave de assinatura:** o primeiro `make apk` cria `mobile/release.keystore` e `mobile/keystore.properties`
+(fora do git). **Faz backup destes dois ficheiros.** O Android só aceita uma atualização assinada com a mesma
+chave; sem eles, os alunos teriam de desinstalar a app (e perder o progresso) para instalar a nova.
+
+## Publicar (AeonFree — https://solvestuff.zya.me)
+
+O alojamento só corre PHP, por isso o site usa `hosting/api/index.php` (port em PHP de `src/api.js`, mesmas rotas
+e mesmos ficheiros JSON). **Se mudares uma rota em `src/api.js`, muda também em `hosting/api/index.php`.**
+
+```bash
+make deploy                # envia o código alterado e sincroniza os dados nos dois sentidos
+FORCE=local make deploy    # conflito: fica a versão local
+FORCE=live make deploy     # conflito: fica a versão do site
+```
+
+Precisa de `FTP_USER` e `FTP_PASS` no `.env`. Os dados (`storage/`) sincronizam com base no último deploy
+(`.deploy-state/`): alterações só locais sobem, alterações feitas no site (área do professor) descem, e se o mesmo
+ficheiro mudou dos dois lados o deploy pára sem escrever nada. O que for substituído fica em `backups/`.

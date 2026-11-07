@@ -26,7 +26,15 @@ export function setAdminToken(token) {
 
 async function request(method, path, body, { admin = false } = {}) {
   const headers = {};
-  if (admin) headers.Authorization = `Bearer ${getAdminToken()}`;
+  if (admin) {
+    // X-Authorization is a fallback for PHP hosts that strip the Authorization header.
+    headers.Authorization = headers['X-Authorization'] = `Bearer ${getAdminToken()}`;
+  }
+  // Some shared hosts block PATCH/DELETE; tunnel them through POST (both servers accept this).
+  if (method === 'PATCH' || method === 'DELETE') {
+    headers['X-HTTP-Method-Override'] = method;
+    method = 'POST';
+  }
   let payload = body;
   if (body && !(body instanceof FormData)) {
     headers['Content-Type'] = 'application/json';
@@ -53,6 +61,10 @@ export function listSheets(filter = {}) {
 export const fileUrl = (id, download = false) =>
   `${BASE}/api/sheets/${encodeURIComponent(id)}/file${download ? '?download=1' : ''}`;
 
+export const getAppRelease = () => request('GET', '/api/app/latest').then((d) => d.latest);
+
+export const apkUrl = () => `${BASE}/api/app/apk`;
+
 export const admin = {
   login: (password) => request('POST', '/api/admin/login', { password }),
   logout: () => request('POST', '/api/admin/logout', null, { admin: true }),
@@ -73,4 +85,5 @@ export const admin = {
   updateStudent: (id, fields) => request('PATCH', `/api/admin/students/${id}`, fields, { admin: true }),
   setProgress: (id, topics) => request('PATCH', `/api/admin/students/${id}/progress`, { topics }, { admin: true }),
   deleteStudent: (id) => request('DELETE', `/api/admin/students/${id}`, null, { admin: true }),
+  publishApp: (form) => request('POST', '/api/admin/app', form, { admin: true }).then((d) => d.latest),
 };

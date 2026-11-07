@@ -1,0 +1,84 @@
+\documentclass[12pt]{article}
+\usepackage{ficha}
+
+\begin{document}
+
+\ficha{Medidas de Dispersão, Correlação e Regressão Linear}
+
+\instrucoes{Podes usar calculadora (com as funções estatísticas); arredonda às centésimas. Variância: $s^2 = \dfrac{\sum (x_i - \overline{x})^2}{n - 1}$; desvio padrão: $s = \sqrt{s^2}$.}
+
+\secao{Média, Variância e Desvio Padrão}{Para cada conjunto de dados, calcula a média, a variância e o desvio padrão.}
+\begin{exercicios}
+  \item $2,\ 4,\ 6,\ 8,\ 10$
+  \item $5,\ 5,\ 5,\ 5,\ 5$
+  \item $1,\ 3,\ 3,\ 7,\ 11$
+  \item $12,\ 15,\ 11,\ 18,\ 14,\ 20$
+  \item $3{,}2;\ 4{,}1;\ 2{,}8;\ 3{,}9;\ 4{,}5;\ 3{,}5$
+  \item Explica o que significa um desvio padrão nulo.
+  \item Duas turmas têm média 12 num teste, mas desvios padrão de 1,5 e 4,2. Interpreta.
+\end{exercicios}
+
+\secao{Dados em Tabelas de Frequências}{Resolve.}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}\hline
+  N.º de irmãos ($x_i$) & 0 & 1 & 2 & 3 & 4 \\\hline
+  Frequência ($n_i$) & 6 & 10 & 8 & 4 & 2 \\\hline
+\end{tabular}
+\end{center}
+
+\begin{exercicios}
+  \item Quantos alunos responderam?
+  \item Calcula a média do número de irmãos.
+  \item Calcula o desvio padrão.
+  \item Determina a mediana e os quartis.
+  \item Determina o percentil 90.
+\end{exercicios}
+
+\secao{Propriedades e Percentis}{Resolve.}
+\begin{exercicios}
+  \item Num conjunto de dados, $\overline{x} = 20$ e $s = 3$. Se somarmos 5 a todos os dados, qual é a nova média e o novo desvio padrão?
+  \item No mesmo conjunto, se multiplicarmos todos os dados por 2, qual é a nova média e o novo desvio padrão?
+  \item As temperaturas, em °C, têm média 18 e desvio padrão 4. Determina a média e o desvio padrão em °F ($F = 1{,}8C + 32$).
+  \item O que significa estar no percentil 75 de um teste nacional?
+  \item Determina o percentil 30 e o percentil 80 dos dados: $4, 7, 8, 10, 12, 13, 15, 18, 20, 25$.
+\end{exercicios}
+
+\secao{Diagramas de Dispersão e Correlação}{Classifica a correlação (positiva, negativa ou nula; forte ou fraca) entre as variáveis.}
+\begin{exercicios}
+  \item Número de horas de estudo e classificação no exame.
+  \item Temperatura exterior e consumo de aquecimento.
+  \item Altura de uma pessoa e número do sapato.
+  \item Número de calçado e classificação a Matemática.
+  \item Explica a diferença entre correlação e causalidade com um exemplo.
+  \item O coeficiente de correlação de um conjunto de dados é $r = -0{,}92$. Interpreta.
+\end{exercicios}
+
+\secao{Regressão Linear}{A tabela apresenta as horas de estudo semanais ($x$) e a classificação ($y$, de 0 a 20) de oito alunos.}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}\hline
+  $x$ & 2 & 3 & 5 & 6 & 8 & 9 & 11 & 12 \\\hline
+  $y$ & 7 & 8 & 10 & 11 & 13 & 13 & 16 & 17 \\\hline
+\end{tabular}
+\end{center}
+
+\begin{exercicios}
+  \item Constrói o diagrama de dispersão.
+  \item Calcula o centro de gravidade $(\overline{x}, \overline{y})$.
+  \item Usa a calculadora para determinar a equação da reta de regressão $y = ax + b$ e o coeficiente de correlação $r$.
+  \item Verifica que a reta de regressão passa pelo centro de gravidade.
+  \item Estima a classificação de um aluno que estuda 7 horas por semana.
+  \item Seria razoável usar o modelo para estimar a classificação de quem estuda 30 horas? Justifica.
+  \item Calcula o resíduo correspondente ao aluno que estudou 9 horas.
+\end{exercicios}
+
+\secao{Desafios}{Resolve os problemas.}
+\begin{exercicios}
+  \item Escreve um conjunto de 5 dados com média 10 e desvio padrão 0.
+  \item Escreve dois conjuntos de 5 dados com a mesma média e desvios padrão diferentes.
+  \item A média de 10 dados é 15. Retira-se o dado 24. Qual é a nova média?
+  \item Mostra que $\sum_{i=1}^{n} (x_i - \overline{x}) = 0$ para qualquer conjunto de dados.
+\end{exercicios}
+
+\end{document}

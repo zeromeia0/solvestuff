@@ -3,3 +3,6 @@ storage/
 .env
 *.tmp
 .run/
+dist/
+backups/
+.deploy-state/

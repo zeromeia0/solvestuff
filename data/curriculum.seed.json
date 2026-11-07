@@ -3,95 +3,302 @@
   "levels": [
     {
       "id": "basico",
-      "name": { "pt": "Básico", "en": "Basic" },
-      "description": { "pt": "1.º ao 9.º ano", "en": "Grades 1–9 (Portuguese system)" },
+      "name": {
+        "pt": "Básico",
+        "en": "Basic"
+      },
+      "description": {
+        "pt": "1.º ao 9.º ano",
+        "en": "Grades 1–9 (Portuguese system)"
+      },
       "wip": false,
       "buildsOn": null,
       "topics": [
         {
           "id": "calculo-numerico",
-          "name": { "pt": "Cálculo Numérico", "en": "Numerical Calculation" },
-          "description": { "pt": "Operações, prioridades, potências e raízes.", "en": "Operations, order of operations, powers and roots." },
+          "name": {
+            "pt": "Cálculo Numérico",
+            "en": "Numerical Calculation"
+          },
+          "description": {
+            "pt": "Operações, prioridades, potências e raízes.",
+            "en": "Operations, order of operations, powers and roots."
+          },
           "wip": false
         },
         {
           "id": "fracoes",
-          "name": { "pt": "Frações", "en": "Fractions" },
-          "description": { "pt": "Simplificar, comparar e operar com frações.", "en": "Simplifying, comparing and operating with fractions." },
+          "name": {
+            "pt": "Frações",
+            "en": "Fractions"
+          },
+          "description": {
+            "pt": "Simplificar, comparar e operar com frações.",
+            "en": "Simplifying, comparing and operating with fractions."
+          },
           "wip": false
         },
         {
           "id": "percentagens",
-          "name": { "pt": "Percentagens", "en": "Percentages" },
-          "description": { "pt": "Percentagens, descontos, aumentos e proporções.", "en": "Percentages, discounts, increases and proportions." },
+          "name": {
+            "pt": "Percentagens",
+            "en": "Percentages"
+          },
+          "description": {
+            "pt": "Percentagens, descontos, aumentos e proporções.",
+            "en": "Percentages, discounts, increases and proportions."
+          },
           "wip": false
         },
         {
           "id": "algebra-essencial",
-          "name": { "pt": "Álgebra Essencial", "en": "Essential Algebra" },
-          "description": { "pt": "Expressões, equações e sistemas.", "en": "Expressions, equations and systems." },
+          "name": {
+            "pt": "Álgebra Essencial",
+            "en": "Essential Algebra"
+          },
+          "description": {
+            "pt": "Expressões, equações e sistemas.",
+            "en": "Expressions, equations and systems."
+          },
+          "wip": false
+        },
+        {
+          "id": "inequacao",
+          "name": {
+            "pt": "Inequações",
+            "en": "Inequalities"
+          },
+          "description": {
+            "pt": "Inequações do 1.º e 2.º grau, intervalos e conjuntos-solução.",
+            "en": "First- and second-degree inequalities, intervals and solution sets."
+          },
           "wip": false
         },
         {
           "id": "geometria",
-          "name": { "pt": "Geometria", "en": "Geometry" },
-          "description": { "pt": "Figuras, áreas, volumes e Pitágoras.", "en": "Shapes, areas, volumes and Pythagoras." },
+          "name": {
+            "pt": "Geometria",
+            "en": "Geometry"
+          },
+          "description": {
+            "pt": "Figuras, áreas, volumes e Pitágoras.",
+            "en": "Shapes, areas, volumes and Pythagoras."
+          },
           "wip": false
         },
         {
           "id": "estatistica",
-          "name": { "pt": "Estatística", "en": "Statistics" },
-          "description": { "pt": "Tabelas, gráficos, média, moda e mediana.", "en": "Tables, charts, mean, mode and median." },
+          "name": {
+            "pt": "Estatística",
+            "en": "Statistics"
+          },
+          "description": {
+            "pt": "Tabelas, gráficos, média, moda e mediana.",
+            "en": "Tables, charts, mean, mode and median."
+          },
           "wip": false
         }
       ]
     },
     {
       "id": "secundario",
-      "name": { "pt": "Secundário", "en": "High School" },
-      "description": { "pt": "10.º ao 12.º ano", "en": "Grades 10–12 (Portuguese system)" },
+      "name": {
+        "pt": "Secundário",
+        "en": "High School"
+      },
+      "description": {
+        "pt": "10.º ao 12.º ano",
+        "en": "Grades 10–12 (Portuguese system)"
+      },
       "wip": true,
       "buildsOn": "basico",
       "topics": [
         {
-          "id": "inequacoes",
-          "name": { "pt": "Inequações", "en": "Inequalities" },
-          "description": { "pt": "", "en": "" },
+          "id": "logica",
+          "name": {
+            "pt": "Lógica e Demonstração",
+            "en": "Logic and Proof"
+          },
+          "description": {
+            "pt": "Proposições, quantificadores e métodos de demonstração.",
+            "en": "Propositions, quantifiers and methods of proof."
+          },
           "wip": false
         },
         {
-          "id": "sucessoes-progressoes",
-          "name": { "pt": "Sucessões e Progressões", "en": "Sequences and Progressions" },
-          "description": { "pt": "", "en": "" },
+          "id": "radicais-polinomios",
+          "name": {
+            "pt": "Radicais e Polinómios",
+            "en": "Radicals and Polynomials"
+          },
+          "description": {
+            "pt": "Radicais, potências de expoente racional, divisão de polinómios e Ruffini.",
+            "en": "Radicals, rational exponents, polynomial division and Ruffini’s rule."
+          },
+          "wip": false
+        },
+        {
+          "id": "funcoes",
+          "name": {
+            "pt": "Funções",
+            "en": "Functions"
+          },
+          "description": {
+            "pt": "Domínio, composição, inversa, transformações e funções racionais.",
+            "en": "Domain, composition, inverse, transformations and rational functions."
+          },
+          "wip": false
+        },
+        {
+          "id": "geometria-analitica",
+          "name": {
+            "pt": "Geometria Analítica e Vetores",
+            "en": "Analytic Geometry and Vectors"
+          },
+          "description": {
+            "pt": "Distâncias, retas, circunferência, vetores, produto escalar e planos.",
+            "en": "Distances, lines, circles, vectors, dot product and planes."
+          },
           "wip": false
         },
         {
           "id": "trigonometria",
-          "name": { "pt": "Trigonometria", "en": "Trigonometry" },
-          "description": { "pt": "", "en": "" },
+          "name": {
+            "pt": "Trigonometria",
+            "en": "Trigonometry"
+          },
+          "description": {
+            "pt": "Lei dos senos e cossenos, radianos, funções e equações trigonométricas.",
+            "en": "Laws of sines and cosines, radians, trigonometric functions and equations."
+          },
           "wip": false
         },
         {
-          "id": "numeros-complexos",
-          "name": { "pt": "Números Complexos", "en": "Complex Numbers" },
-          "description": { "pt": "", "en": "" },
+          "id": "sucessoes-progressoes",
+          "name": {
+            "pt": "Sucessões e Progressões",
+            "en": "Sequences and Progressions"
+          },
+          "description": {
+            "pt": "Sucessões, indução matemática e progressões aritméticas e geométricas.",
+            "en": "Sequences, mathematical induction, arithmetic and geometric progressions."
+          },
           "wip": false
         },
         {
           "id": "limites",
-          "name": { "pt": "Limites", "en": "Limits" },
-          "description": { "pt": "", "en": "" },
+          "name": {
+            "pt": "Limites e Continuidade",
+            "en": "Limits and Continuity"
+          },
+          "description": {
+            "pt": "Limites de sucessões e funções, o número e, continuidade e assíntotas.",
+            "en": "Limits of sequences and functions, the number e, continuity and asymptotes."
+          },
+          "wip": false
+        },
+        {
+          "id": "derivadas",
+          "name": {
+            "pt": "Derivadas",
+            "en": "Derivatives"
+          },
+          "description": {
+            "pt": "Reta tangente, regras de derivação, monotonia, extremos e estudo de funções.",
+            "en": "Tangent lines, differentiation rules, monotonicity, extrema and curve sketching."
+          },
+          "wip": false
+        },
+        {
+          "id": "exponenciais-logaritmos",
+          "name": {
+            "pt": "Exponenciais e Logaritmos",
+            "en": "Exponentials and Logarithms"
+          },
+          "description": {
+            "pt": "Juros compostos, funções exponencial e logarítmica, equações e modelos.",
+            "en": "Compound interest, exponential and logarithmic functions, equations and models."
+          },
+          "wip": false
+        },
+        {
+          "id": "numeros-complexos",
+          "name": {
+            "pt": "Números Complexos",
+            "en": "Complex Numbers"
+          },
+          "description": {
+            "pt": "Forma algébrica e trigonométrica, plano complexo, De Moivre e raízes.",
+            "en": "Algebraic and trigonometric form, the complex plane, De Moivre and roots."
+          },
+          "wip": false
+        },
+        {
+          "id": "estatistica",
+          "name": {
+            "pt": "Estatística",
+            "en": "Statistics"
+          },
+          "description": {
+            "pt": "Variância, desvio padrão, percentis, correlação e regressão linear.",
+            "en": "Variance, standard deviation, percentiles, correlation and linear regression."
+          },
+          "wip": false
+        },
+        {
+          "id": "combinatoria-probabilidades",
+          "name": {
+            "pt": "Combinatória e Probabilidades",
+            "en": "Combinatorics and Probability"
+          },
+          "description": {
+            "pt": "Arranjos, combinações, binómio de Newton, probabilidade condicionada e distribuições.",
+            "en": "Arrangements, combinations, binomial theorem, conditional probability and distributions."
+          },
           "wip": false
         }
       ]
     },
     {
       "id": "universidade",
-      "name": { "pt": "Universidade", "en": "University" },
-      "description": { "pt": "Ensino superior", "en": "University level" },
+      "name": {
+        "pt": "Universidade",
+        "en": "University"
+      },
+      "description": {
+        "pt": "Ensino superior",
+        "en": "University level"
+      },
       "wip": true,
       "buildsOn": "secundario",
       "topics": []
+    },
+    {
+      "id": "prova-nivelamento",
+      "name": {
+        "pt": "Prova de Nivelamento",
+        "en": "Placement Test"
+      },
+      "description": {
+        "pt": "Descobre o teu nível antes de começar",
+        "en": "Find your level before you start"
+      },
+      "wip": false,
+      "buildsOn": null,
+      "topics": [
+        {
+          "id": "prova-nivelamento",
+          "name": {
+            "pt": "Prova de Nivelamento",
+            "en": "Placement Test"
+          },
+          "description": {
+            "pt": "Prova de escolha múltipla do básico ao secundário, com soluções.",
+            "en": "Multiple-choice test from basic to high-school level, with solutions."
+          },
+          "wip": false
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,7 @@
+node_modules/
+www/
+dist/
+capacitor.config.json
+# The signing key: NOT in git, but back it up. Updates need the same key.
+release.keystore
+keystore.properties

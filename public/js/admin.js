@@ -43,7 +43,7 @@ export function adminHead(active) {
         <h1>${esc(t('admin.title'))}</h1>
         <button class="btn ghost" data-action="logout">${esc(t('admin.logout'))}</button>
       </div>
-      <nav class="tabs">${tab('content', '#/admin')}${tab('students', '#/admin/students')}</nav>
+      <nav class="tabs">${tab('content', '#/admin')}${tab('students', '#/admin/students')}${tab('app', '#/admin/app')}</nav>
     </section>`;
 }
 

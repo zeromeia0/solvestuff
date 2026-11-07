@@ -1,0 +1,75 @@
+\documentclass[12pt]{article}
+\usepackage{ficha}
+
+\begin{document}
+
+\ficha{Sucessões, Indução Matemática e Progressões}
+
+\instrucoes{Resolve os exercícios, apresentando os cálculos. Considera sempre $n \in \N$.}
+
+\secao{Termos e Termo Geral}{Resolve.}
+\begin{exercicios}
+  \item Calcula os quatro primeiros termos de $u_n = \dfrac{2n - 1}{n + 1}$.
+  \item Calcula os quatro primeiros termos de $v_n = (-1)^n \cdot 2^n$.
+  \item Calcula $u_{10}$ e $u_{n+1}$ para $u_n = n^2 - 3n$.
+  \item Verifica se $\dfrac{19}{11}$ é termo da sucessão $u_n = \dfrac{2n - 1}{n + 1}$ e, em caso afirmativo, indica a ordem.
+  \item Quantos termos da sucessão $u_n = 50 - 3n$ são positivos?
+  \item Calcula os cinco primeiros termos da sucessão definida por $u_1 = 2$ e $u_{n+1} = 3u_n - 1$.
+  \item Calcula os seis primeiros termos da sucessão definida por $u_1 = 1$, $u_2 = 1$ e $u_{n+2} = u_{n+1} + u_n$.
+\end{exercicios}
+
+\secao{Monotonia e Limitação}{Estuda a monotonia de cada sucessão (usa $u_{n+1} - u_n$) e indica se é limitada.}
+\begin{exercicios}
+  \item $u_n = 3n + 2$
+  \item $u_n = 5 - 2n$
+  \item $u_n = \dfrac{1}{n}$
+  \item $u_n = \dfrac{n}{n + 1}$
+  \item $u_n = \dfrac{2n + 3}{n + 1}$
+  \item $u_n = n^2 - 4n$
+  \item $u_n = (-1)^n$
+  \item Mostra que $u_n = \dfrac{3n - 1}{n + 2}$ é limitada, indicando um majorante e um minorante.
+\end{exercicios}
+
+\secao{Princípio de Indução Matemática}{Demonstra, por indução matemática, que para todo $n \in \N$:}
+\begin{exercicios}
+  \item $1 + 2 + 3 + \cdots + n = \dfrac{n(n + 1)}{2}$
+  \item $1 + 3 + 5 + \cdots + (2n - 1) = n^2$
+  \item $1^2 + 2^2 + \cdots + n^2 = \dfrac{n(n + 1)(2n + 1)}{6}$
+  \item $2^n \ge n + 1$
+  \item $n^3 + 2n$ é divisível por 3.
+  \item $4^n - 1$ é divisível por 3.
+  \item A sucessão $u_1 = 1$, $u_{n+1} = \dfrac{u_n}{2} + 1$ verifica $u_n < 2$.
+\end{exercicios}
+
+\secao{Progressões Aritméticas}{Resolve.}
+\begin{exercicios}
+  \item Mostra que $u_n = 4n - 3$ é uma progressão aritmética e indica a razão.
+  \item Numa progressão aritmética, $u_1 = 7$ e $r = 3$. Determina $u_{20}$ e o termo geral.
+  \item Numa progressão aritmética, $u_5 = 18$ e $u_{12} = 46$. Determina $u_1$, $r$ e o termo geral.
+  \item Calcula a soma dos 30 primeiros termos da progressão $2, 5, 8, 11, \ldots$
+  \item Calcula a soma dos números naturais múltiplos de 4 entre 1 e 200.
+  \item Calcula $\displaystyle\sum_{k=1}^{25} (2k + 1)$.
+  \item Quantos termos da progressão $3, 7, 11, \ldots$ é preciso somar para obter 465?
+\end{exercicios}
+
+\secao{Progressões Geométricas}{Resolve.}
+\begin{exercicios}
+  \item Mostra que $u_n = 5 \cdot 2^{n-1}$ é uma progressão geométrica e indica a razão.
+  \item Numa progressão geométrica, $u_1 = 3$ e $r = 2$. Determina $u_8$ e o termo geral.
+  \item Numa progressão geométrica, $u_2 = 6$ e $u_5 = 162$. Determina $u_1$ e $r$.
+  \item Calcula a soma dos 10 primeiros termos de $1, 2, 4, 8, \ldots$
+  \item Calcula a soma dos 6 primeiros termos de $81, 27, 9, \ldots$
+  \item Estuda a monotonia da progressão geométrica de razão $r$ e primeiro termo positivo, conforme $r > 1$, $0 < r < 1$ ou $r < 0$.
+  \item Calcula $\displaystyle\sum_{k=1}^{8} 3^{k}$.
+\end{exercicios}
+
+\secao{Desafios}{Resolve os problemas.}
+\begin{exercicios}
+  \item Um teatro tem 20 filas. A primeira tem 16 lugares e cada fila tem mais 2 lugares do que a anterior. Quantos lugares tem o teatro?
+  \item Uma bola é largada de 8\,m de altura e, em cada ressalto, sobe $\dfrac{3}{4}$ da altura anterior. Que altura atinge no 5.º ressalto? Que distância vertical total percorreu até tocar no chão pela 6.ª vez?
+  \item Três números estão em progressão aritmética, a sua soma é 21 e o seu produto é 280. Determina-os.
+  \item Prova, por indução, que $1 + 2 + 2^2 + \cdots + 2^{n-1} = 2^n - 1$.
+  \item Uma lenda conta que o inventor do xadrez pediu 1 grão de trigo na 1.ª casa, 2 na 2.ª, 4 na 3.ª, e assim sucessivamente. Quantos grãos no total nas 64 casas? Escreve como potência.
+\end{exercicios}
+
+\end{document}

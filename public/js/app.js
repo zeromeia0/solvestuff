@@ -4,6 +4,8 @@ import * as user from './user.js';
 import { esc, levelById, wipBadge, progressBar, sheetList, levelPicker, options, topicName } from './ui.js';
 import { renderAdmin } from './admin.js';
 import { renderStudents, renderStudent } from './students.js';
+import { renderAppAdmin } from './appAdmin.js';
+import { watchForUpdates } from './appUpdate.js';
 
 const view = document.getElementById('view');
 const nav = document.getElementById('nav');
@@ -287,6 +289,7 @@ const routes = [
   [/^\/admin$/, renderAdmin, { public: true }],
   [/^\/admin\/students$/, renderStudents, { public: true }],
   [/^\/admin\/students\/([\w-]+)$/, renderStudent, { public: true }],
+  [/^\/admin\/app$/, renderAppAdmin, { public: true }],
 ];
 
 function renderChrome(active) {
@@ -356,3 +359,4 @@ export { route };
 setLang(getLang());
 window.addEventListener('hashchange', route);
 route();
+watchForUpdates();

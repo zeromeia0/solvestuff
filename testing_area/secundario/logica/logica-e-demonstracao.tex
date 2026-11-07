@@ -1,0 +1,91 @@
+\documentclass[12pt]{article}
+\usepackage{ficha}
+
+\begin{document}
+
+\ficha{Lógica e Métodos de Demonstração}[Proposições, Operações Lógicas, Quantificadores e Demonstrações]
+
+\instrucoes{Resolve os exercícios, justificando as respostas. Usa $\wedge$ (e), $\vee$ (ou), $\sim$ (negação), $\Rightarrow$ (implicação) e $\Leftrightarrow$ (equivalência).}
+
+\secao{Proposições}{Indica se cada expressão é uma proposição e, em caso afirmativo, o seu valor lógico.}
+\begin{exercicios}
+  \item $7$ é um número primo.
+  \item $2 + 3 = 6$.
+  \item $x + 1 = 4$.
+  \item Lisboa é a capital de Portugal.
+  \item Que horas são?
+  \item $\sqrt{2}$ é um número racional.
+  \item Todos os quadrados são retângulos.
+  \item $\pi > 3$.
+\end{exercicios}
+
+\secao{Operações Lógicas}{Sejam $p$: «$4$ é par», $q$: «$4 > 10$» e $r$: «$9$ é um quadrado perfeito». Indica o valor lógico de cada proposição.}
+\begin{exercicios}
+  \item $p \wedge q$
+  \item $p \vee q$
+  \item $\sim q$
+  \item $q \Rightarrow r$
+  \item $p \Rightarrow q$
+  \item $p \Leftrightarrow r$
+  \item $(p \wedge r) \Rightarrow q$
+  \item $\sim (p \vee q)$
+  \item $(\sim p) \vee (q \wedge r)$
+  \item Traduz em linguagem corrente: $p \wedge (\sim q)$.
+\end{exercicios}
+
+\secao{Tabelas de Verdade e Leis Lógicas}{Constrói as tabelas de verdade e verifica as equivalências.}
+\begin{exercicios}
+  \item Constrói a tabela de verdade de $p \Rightarrow q$.
+  \item Mostra que $p \Rightarrow q$ é equivalente a $(\sim p) \vee q$.
+  \item Mostra que $\sim (p \wedge q) \Leftrightarrow (\sim p) \vee (\sim q)$ (primeira lei de De Morgan).
+  \item Mostra que $\sim (p \vee q) \Leftrightarrow (\sim p) \wedge (\sim q)$ (segunda lei de De Morgan).
+  \item Mostra que $p \Rightarrow q$ é equivalente a $\sim q \Rightarrow \sim p$ (contrarrecíproco).
+  \item Mostra que $p \vee (\sim p)$ é uma tautologia.
+  \item Escreve a negação de $p \Rightarrow q$ sem usar o símbolo $\Rightarrow$.
+  \item Simplifica $\sim (\sim p \wedge q)$.
+\end{exercicios}
+
+\secao{Condições e Quantificadores}{Indica o valor lógico de cada proposição, em $\R$, e escreve a sua negação.}
+\begin{exercicios}
+  \item $\forall x,\ x^2 \ge 0$
+  \item $\exists x : x^2 = -1$
+  \item $\forall x,\ x + 1 > x$
+  \item $\exists x : 2x + 3 = 0$
+  \item $\forall x,\ x^2 > x$
+  \item $\exists x : x^2 - 5x + 6 = 0$
+  \item $\forall x,\ (x > 2 \Rightarrow x^2 > 4)$
+  \item $\forall x,\ (x^2 > 4 \Rightarrow x > 2)$
+  \item Indica um contraexemplo para a proposição falsa do exercício 8.
+  \item Escreve em linguagem simbólica: «Existe um número real cujo quadrado é igual ao seu dobro.»
+\end{exercicios}
+
+\secao{Implicação e Equivalência}{Indica se a implicação ou equivalência é verdadeira, em $\R$, justificando.}
+\begin{exercicios}
+  \item $x = 3 \Rightarrow x^2 = 9$
+  \item $x^2 = 9 \Rightarrow x = 3$
+  \item $x^2 = 9 \Leftrightarrow (x = 3 \vee x = -3)$
+  \item $x > 0 \wedge y > 0 \Rightarrow xy > 0$
+  \item $xy > 0 \Rightarrow x > 0 \wedge y > 0$
+  \item Indica uma condição necessária mas não suficiente para que um número natural seja múltiplo de 6.
+  \item Indica uma condição suficiente mas não necessária para que um número seja par.
+\end{exercicios}
+
+\secao{Métodos de Demonstração}{Demonstra cada afirmação, usando o método indicado.}
+\begin{exercicios}
+  \item (Demonstração direta) A soma de dois números pares é par.
+  \item (Demonstração direta) O quadrado de um número ímpar é ímpar.
+  \item (Demonstração direta) Para todo $n \in \N$, $n^2 + n$ é par.
+  \item (Contrarrecíproco) Se $n^2$ é par, então $n$ é par.
+  \item (Redução ao absurdo) $\sqrt{2}$ é irracional.
+  \item (Contraexemplo) Mostra que é falso: «Para todo $n \in \N$, $n^2 + n + 41$ é primo.» (Experimenta $n = 40$.)
+\end{exercicios}
+
+\secao{Desafios}{Resolve os problemas.}
+\begin{exercicios}
+  \item Prova que, para todo o número natural $n$, $n^3 - n$ é divisível por 6.
+  \item Prova por redução ao absurdo que não existe um maior número natural.
+  \item Considera a proposição: «Se um quadrilátero é um quadrado, então tem as diagonais iguais.» Escreve a recíproca, a contrária e a contrarrecíproca. Quais são verdadeiras?
+  \item Num reino, os cavaleiros dizem sempre a verdade e os escudeiros mentem sempre. A diz: «B é escudeiro.» B diz: «A e eu somos do mesmo tipo.» O que é cada um?
+\end{exercicios}
+
+\end{document}

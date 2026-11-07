@@ -1,0 +1,17 @@
+# Fdb version 4
+["pdflatex"] 1794063682.53297 "casos-notaveis-e-fatorizacao.tex" ".texbuild/casos-notaveis-e-fatorizacao.pdf" "casos-notaveis-e-fatorizacao" 1794063682.67947 2
+  ".texbuild/casos-notaveis-e-fatorizacao.aux" 1794063674.53244 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
+  ".texbuild/ficha.sty" 0 -1 0 ""
+  "/usr/share/texmf-dist/fonts/map/fontname/texfonts.map" 1775415801 3524 cb3e574dea2d1052e39280babc910dc8 ""
+  "/usr/share/texmf-dist/fonts/tfm/public/cm/cmr12.tfm" 1775415801 1288 655e228510b4c2a1abe905c368440826 ""
+  "/usr/share/texmf-dist/tex/latex/base/article.cls" 1775415801 20144 b966087dda3b194755eb460d32e2ef75 ""
+  "/usr/share/texmf-dist/tex/latex/base/size12.clo" 1775415801 8449 8dc66c6c313c8eb2d774af83bca435dd ""
+  "/usr/share/texmf-dist/web2c/texmf.cnf" 1775415801 43569 fd570f2fa160877d211e859f687312ba ""
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1793016147 3765583 f9205da981310487aa00e97a4cca6285 ""
+  "casos-notaveis-e-fatorizacao.tex" 1794062529.5952 2631 4d6ed700128f5eb8bab1255b0226aba3 ""
+  "ficha.sty" 0 -1 0 ""
+  (generated)
+  ".texbuild/casos-notaveis-e-fatorizacao.aux"
+  ".texbuild/casos-notaveis-e-fatorizacao.log"
+  ".texbuild/casos-notaveis-e-fatorizacao.pdf"
+  (rewritten before read)

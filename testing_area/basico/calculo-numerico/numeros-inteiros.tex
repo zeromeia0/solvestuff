@@ -1,0 +1,108 @@
+\documentclass[12pt]{article}
+\usepackage{ficha}
+
+\begin{document}
+
+\ficha{Números Inteiros}[Simétrico, Valor Absoluto e Regra dos Sinais]
+
+\instrucoes{Resolve sem calculadora, apresentando os cálculos.}
+
+\secao{Números Negativos no Dia a Dia}{Representa cada situação por um número inteiro.}
+\begin{exercicios}
+  \item Uma temperatura de 5 graus abaixo de zero.
+  \item Um lucro de 120 euros.
+  \item Uma dívida de 45 euros.
+  \item O 3.º piso subterrâneo de um parque de estacionamento.
+  \item Um mergulhador a 18 metros de profundidade.
+  \item O ano 776 antes de Cristo.
+  \item A temperatura era de $-3$\,°C e subiu 8\,°C. Qual é a nova temperatura?
+  \item A temperatura era de 4\,°C e desceu 10\,°C. Qual é a nova temperatura?
+  \item Um elevador está no piso $-2$, sobe 5 pisos e desce 4. Em que piso fica?
+  \item Numa conta bancária com 50 euros fez-se um pagamento de 80 euros. Qual é o saldo?
+\end{exercicios}
+
+\secao{Simétrico, Valor Absoluto e Comparação}{Responde a cada questão.}
+
+\begin{center}
+\begin{tikzpicture}[x=0.8cm]
+  \draw[{Latex}-{Latex}] (-6.5,0) -- (6.5,0);
+  \foreach \i in {-6,...,6} {\draw (\i,0.1) -- (\i,-0.1); \node[below] at (\i,-0.1) {\small $\i$};}
+  \fill (-4,0) circle (2pt) node[above] {$A$};
+  \fill (-1,0) circle (2pt) node[above] {$B$};
+  \fill (3,0) circle (2pt) node[above] {$C$};
+\end{tikzpicture}
+\end{center}
+
+\begin{exercicios}
+  \item Indica os números representados pelos pontos $A$, $B$ e $C$.
+  \item Indica o simétrico de cada um desses números.
+  \item Calcula $|-4|$, $|3|$, $|-1|$ e $|0|$.
+  \item Qual é a distância entre os pontos $A$ e $C$?
+  \item Indica o simétrico de $-17$ e de $25$.
+  \item Que números têm valor absoluto igual a 9?
+  \item Compara usando $<$ ou $>$: $\;-7 \;\square\; -2$
+  \item Compara usando $<$ ou $>$: $\;-15 \;\square\; 3$
+  \item Compara usando $<$ ou $>$: $\;0 \;\square\; -8$
+  \item Ordena por ordem crescente: $5,\ -3,\ 0,\ -9,\ 2,\ -1$.
+  \item Escreve todos os números inteiros $x$ tais que $-3 < x \le 2$.
+\end{exercicios}
+
+\secao{Adição e Subtração}{Calcula.}
+\begin{exercicios}
+  \item $(-5) + (-3)$
+  \item $(-8) + 6$
+  \item $7 + (-12)$
+  \item $(-4) + 4$
+  \item $(-9) - 3$
+  \item $5 - (-6)$
+  \item $(-10) - (-4)$
+  \item $-3 - 8$
+  \item $12 - 20 + 5$
+  \item $-6 + 9 - 11 + 2$
+  \item $-(-7) - (+3) + (-5)$
+  \item $15 - (8 - 13)$
+\end{exercicios}
+
+\secao{Multiplicação e Divisão}{Calcula, aplicando a regra dos sinais.}
+\begin{exercicios}
+  \item $(-4) \times 6$
+  \item $(-7) \times (-3)$
+  \item $9 \times (-5)$
+  \item $(-2) \times (-3) \times (-4)$
+  \item $(-36) : 9$
+  \item $(-48) : (-6)$
+  \item $54 : (-9)$
+  \item $(-1) \times (-1) \times (-1) \times (-1)$
+  \item $(-5)^2$ \quad e \quad $-5^2$
+  \item $(-2)^3$
+  \item $(-12) \times 0 : (-3)$
+  \item Sem calcular, indica o sinal de $(-3) \times 5 \times (-7) \times (-2)$. Justifica.
+\end{exercicios}
+
+\secao{Expressões com Números Inteiros}{Calcula o valor de cada expressão.}
+\begin{exercicios}
+  \item $-3 + 4 \times (-2)$
+  \item $(-3 + 4) \times (-2)$
+  \item $10 - 3 \times (-5)$
+  \item $(-18) : 3 - (-4)$
+  \item $2 \times (-3)^2 - 5$
+  \item $-2^2 + (-2)^2$
+  \item $(-6 + 2) \times (5 - 9)$
+  \item $[-4 - (6 - 10)] \times 3$
+  \item $(-20) : [2 \times (-5)] + 1$
+  \item $5 - [3 - (-2) \times 4] : (-1)$
+\end{exercicios}
+
+\secao{Desafios}{Resolve os problemas.}
+\begin{exercicios}
+  \item Arquimedes nasceu em 287 a.C. e morreu em 212 a.C. Com que idade morreu?
+  \item Num dia de inverno, a temperatura mínima foi $-6$\,°C e a máxima foi 9\,°C. Qual foi a amplitude térmica?
+  \item O produto de dois números inteiros é $-24$ e a sua soma é $5$. Quais são os números?
+  \item Encontra dois números inteiros cuja soma seja $-3$ e cuja diferença seja $11$.
+  \item Num jogo, cada resposta certa vale $+5$ pontos e cada errada $-3$. A Inês acertou 7 e errou 9. Com quantos pontos ficou?
+  \item Completa: $(-8) + \square = -15$ \quad e \quad $\square \times (-6) = 42$.
+  \item Calcula $1 - 2 + 3 - 4 + 5 - 6 + \cdots + 19 - 20$.
+  \item Um submarino está a $-120$\,m. Sobe 45\,m, desce 70\,m e volta a subir 30\,m. A que profundidade fica?
+\end{exercicios}
+
+\end{document}

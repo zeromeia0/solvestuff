@@ -103,6 +103,25 @@ const dict = {
 
     'admin.tab.content': 'Fichas e temas',
     'admin.tab.students': 'Alunos',
+    'admin.tab.app': 'App Android',
+
+    'appAdmin.current': 'Versão publicada',
+    'appAdmin.none': 'Ainda não publicaste nenhuma versão da app.',
+    'appAdmin.installLink': 'Link para instalar (envia aos alunos ou abre no telemóvel):',
+    'appAdmin.publish': 'Publicar nova versão',
+    'appAdmin.publishHelp': 'Carrega o APK gerado por "make apk". Quem tiver a app instalada vê um aviso para atualizar da próxima vez que a abrir.',
+    'appAdmin.file': 'Ficheiro APK',
+    'appAdmin.versionCode': 'Número da build',
+    'appAdmin.versionName': 'Versão (ex. 0.2.0)',
+    'appAdmin.notes': 'O que mudou (opcional, os alunos veem isto)',
+    'appAdmin.publishBtn': 'Publicar',
+    'appAdmin.published': 'Publicada! As apps vão pedir para atualizar.',
+
+    'update.title': 'Há uma nova versão da app',
+    'update.body': 'A versão {version} já está disponível.',
+    'update.howTo': 'Toca em "Atualizar" para descarregar e depois abre o ficheiro para instalar. O teu progresso não se perde.',
+    'update.go': 'Atualizar',
+    'update.later': 'Mais tarde',
 
     'students.title': 'Alunos',
     'students.add': 'Novo aluno',
@@ -147,6 +166,9 @@ const dict = {
 
     'err.file_too_large': 'O ficheiro é demasiado grande (máx. 50 MB).',
     'err.not_a_pdf': 'O ficheiro tem de ser um PDF.',
+    'err.not_an_apk': 'O ficheiro tem de ser um APK.',
+    'err.invalid_version': 'O número da build tem de ser um inteiro positivo.',
+    'err.version_not_newer': 'O número da build tem de ser maior do que o da versão publicada.',
     'err.file_required': 'Escolhe um ficheiro PDF.',
     'err.title_required': 'Escreve um título.',
     'err.topic_has_sheets': 'Este tema tem fichas. Apaga-as ou muda-as de tema primeiro.',
@@ -259,6 +281,25 @@ const dict = {
 
     'admin.tab.content': 'Sheets and topics',
     'admin.tab.students': 'Students',
+    'admin.tab.app': 'Android app',
+
+    'appAdmin.current': 'Published version',
+    'appAdmin.none': "You haven't published a version of the app yet.",
+    'appAdmin.installLink': 'Install link (send it to students or open it on a phone):',
+    'appAdmin.publish': 'Publish a new version',
+    'appAdmin.publishHelp': 'Upload the APK built by "make apk". Anyone with the app installed gets an update prompt the next time they open it.',
+    'appAdmin.file': 'APK file',
+    'appAdmin.versionCode': 'Build number',
+    'appAdmin.versionName': 'Version (e.g. 0.2.0)',
+    'appAdmin.notes': "What's new (optional, students see this)",
+    'appAdmin.publishBtn': 'Publish',
+    'appAdmin.published': 'Published! Installed apps will ask to update.',
+
+    'update.title': 'A new version of the app is out',
+    'update.body': 'Version {version} is available.',
+    'update.howTo': 'Tap "Update" to download it, then open the file to install. Your progress is kept.',
+    'update.go': 'Update',
+    'update.later': 'Later',
 
     'students.title': 'Students',
     'students.add': 'New student',
@@ -303,6 +344,9 @@ const dict = {
 
     'err.file_too_large': 'File is too large (max 50 MB).',
     'err.not_a_pdf': 'The file must be a PDF.',
+    'err.not_an_apk': 'The file must be an APK.',
+    'err.invalid_version': 'The build number must be a positive whole number.',
+    'err.version_not_newer': 'The build number must be higher than the published version.',
     'err.file_required': 'Choose a PDF file.',
     'err.title_required': 'Enter a title.',
     'err.topic_has_sheets': 'This topic has sheets. Delete or move them first.',

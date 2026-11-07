@@ -1,0 +1,50 @@
+% Estilo comum das fichas de exercícios (igual às fichas publicadas no site).
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ficha}
+
+\RequirePackage[utf8]{inputenc}
+\RequirePackage[T1]{fontenc}
+\RequirePackage[portuguese]{babel}
+\RequirePackage{amsmath,amssymb}
+\RequirePackage[a4paper,margin=2.5cm]{geometry}
+\RequirePackage{enumitem}
+\RequirePackage{multicol}
+\RequirePackage{array}
+\RequirePackage{tikz}
+\RequirePackage{pgfplots}
+\RequirePackage{titlesec}
+\RequirePackage{icomma}
+
+\usetikzlibrary{babel,calc,arrows.meta,angles,quotes,patterns}
+\pgfplotsset{compat=1.18}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+
+\titleformat{\section}{\Large\bfseries}{\thesection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{1.4em}{0.4em}
+
+% \ficha{Tema}[subtítulo opcional]
+\NewDocumentCommand{\ficha}{m o}{%
+  \begin{center}
+    {\Large Ficha de Exercícios — #1}%
+    \IfValueT{#2}{\\[3pt]{\large #2}}%
+  \end{center}\vspace{0.6em}}
+
+% \instrucoes{texto}
+\newcommand{\instrucoes}[1]{\textbf{Instruções:} #1\par}
+
+% \secao{Título}{Instrução da secção}
+\newcommand{\secao}[2]{\section{#1}\textbf{#2}\par}
+
+% Exercícios: numeração recomeça em cada secção
+\newlist{exercicios}{enumerate}{1}
+\setlist[exercicios]{label=\arabic*.,itemsep=1.1em,topsep=0.6em,leftmargin=1.2cm}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\vect}[1]{\overrightarrow{#1}}
+\renewcommand{\arraystretch}{1.3}
